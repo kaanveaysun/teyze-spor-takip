@@ -3,27 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Aysun Hanım - Spor Salonu Takip Sistemi</title>
+    <title>Aysun Hanım - Spor Salonu Takip</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #0a1628 0%, #0f1a2f 100%);
             font-family: 'Inter', sans-serif;
-            padding: 20px;
             min-height: 100vh;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        
+        /* DOĞRULAMA EKRANI */
+        .verify-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a1628, #0a0f1a);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
         }
-        /* HEADER */
+        .verify-card {
+            background: #111c2e;
+            border-radius: 32px;
+            padding: 35px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #3b82f6;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .verify-card h2 { color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .verify-card h2 i { color: #3b82f6; }
+        .verify-card p { color: #94a3b8; margin-bottom: 25px; font-size: 14px; }
+        .question-area {
+            background: #0a1424;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-text { color: #60a5fa; font-weight: 600; margin-bottom: 10px; font-size: 18px; }
+        .hint-text {
+            color: #f59e0b;
+            font-size: 12px;
+            margin-bottom: 15px;
+            font-style: italic;
+            background: rgba(245,158,11,0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .verify-input {
+            width: 100%;
+            background: #0a1424;
+            border: 1px solid #1e3a5f;
+            padding: 14px 18px;
+            border-radius: 60px;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        .verify-input:focus { outline: none; border-color: #3b82f6; }
+        .verify-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .attempts-left { text-align: center; margin-top: 15px; font-size: 12px; color: #ef4444; }
+        .timer-text { text-align: center; margin-top: 15px; font-size: 14px; color: #f59e0b; }
+        .change-question {
+            background: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .warning-locked { text-align: center; color: #ef4444; font-size: 14px; margin-top: 15px; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 16px; }
+        
+        /* LOADING EKRANI */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a1628, #0a0f1a);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+        }
+        .loading-content { text-align: center; animation: pulse 1.5s infinite; }
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(0.98); }
+        }
+        .loading-content h2 { color: white; font-size: 32px; margin-bottom: 30px; }
+        .loading-content h2 i { color: #3b82f6; margin-right: 12px; }
+        .loading-animation { margin: 30px 0; }
+        .loading-animation i { font-size: 60px; color: #3b82f6; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: #60a5fa; font-size: 18px; margin: 10px 0; }
+        .loading-sub { color: #94a3b8; font-size: 14px; margin-top: 20px; }
+        .loading-steps { display: flex; gap: 15px; justify-content: center; margin-top: 25px; flex-wrap: wrap; }
+        .loading-step { background: #1e293b; padding: 8px 16px; border-radius: 40px; font-size: 12px; color: #94a3b8; }
+        .loading-step.active { background: #3b82f6; color: white; }
+        
+        /* ANA İÇERİK */
+        .main-content { display: none; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
         .header {
             background: linear-gradient(135deg, #1e3a5f, #0f2b44);
             border-radius: 28px;
@@ -31,18 +142,9 @@
             margin-bottom: 25px;
             border: 1px solid rgba(59, 130, 246, 0.4);
         }
-        .header h1 {
-            font-size: 28px;
-            color: white;
-        }
-        .header h1 i {
-            color: #3b82f6;
-            margin-right: 12px;
-        }
-        .header p {
-            color: #94a3b8;
-            margin-top: 8px;
-        }
+        .header h1 { font-size: 28px; color: white; }
+        .header h1 i { color: #3b82f6; margin-right: 12px; }
+        .header p { color: #94a3b8; margin-top: 8px; }
         .badge-date {
             background: rgba(59, 130, 246, 0.2);
             display: inline-block;
@@ -52,7 +154,6 @@
             color: #60a5fa;
             margin-top: 12px;
         }
-        /* KARTLAR */
         .card {
             background: #111c2e;
             border-radius: 24px;
@@ -61,9 +162,7 @@
             border: 1px solid #1e3a5f;
             transition: 0.3s;
         }
-        .card:hover {
-            border-color: #3b82f6;
-        }
+        .card:hover { border-color: #3b82f6; }
         .card-title {
             font-size: 18px;
             font-weight: 600;
@@ -73,31 +172,29 @@
             align-items: center;
             gap: 10px;
         }
-        /* INPUT */
         .input-group {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
         }
-        .input-group input {
+        .input-group textarea {
             flex: 1;
             background: #0a1424;
             border: 1px solid #1e3a5f;
             padding: 14px 20px;
-            border-radius: 60px;
+            border-radius: 24px;
             color: white;
             font-size: 15px;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', monospace;
+            resize: vertical;
+            min-height: 150px;
         }
-        .input-group input:focus {
+        .input-group textarea:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
-        .input-group input::placeholder {
-            color: #4a5568;
-        }
-        /* BUTONLAR */
+        .input-group textarea::placeholder { color: #4a5568; font-family: 'Inter', sans-serif; }
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             border: none;
@@ -109,6 +206,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            height: fit-content;
         }
         .btn-pdf {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
@@ -135,7 +233,6 @@
         .btn-danger { background: #ef4444; color: white; }
         .btn-info { background: #3b82f6; color: white; }
         .btn-dark { background: #334155; color: white; }
-        /* ARAMA */
         .search-result {
             background: #0a1424;
             border-radius: 20px;
@@ -145,7 +242,6 @@
             color: #cbd5e1;
             font-size: 14px;
         }
-        /* LİSTE */
         .list-header {
             display: flex;
             justify-content: space-between;
@@ -154,23 +250,9 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .list-header h3 {
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .count {
-            background: #3b82f6;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 13px;
-        }
-        .records-area {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .list-header h3 { color: white; display: flex; align-items: center; gap: 10px; }
+        .count { background: #3b82f6; padding: 4px 14px; border-radius: 40px; font-size: 13px; }
+        .records-area { display: flex; flex-direction: column; gap: 12px; }
         .record-item {
             background: #0f1a2f;
             border-radius: 20px;
@@ -178,10 +260,7 @@
             border: 1px solid #1e3a5f;
             transition: 0.2s;
         }
-        .record-item:hover {
-            background: #13213b;
-            border-color: #3b82f6;
-        }
+        .record-item:hover { background: #13213b; border-color: #3b82f6; }
         .record-row {
             display: flex;
             justify-content: space-between;
@@ -190,38 +269,12 @@
             gap: 12px;
             margin-bottom: 12px;
         }
-        .phone-badge {
-            background: #2563eb;
-            padding: 5px 16px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            color: white;
-        }
-        .name-style {
-            color: #93c5fd;
-            font-weight: 500;
-        }
-        .think-date {
-            font-size: 11px;
-            color: #f59e0b;
-            margin-top: 6px;
-        }
-        .button-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 12px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 50px;
-            color: #4a5568;
-        }
-        .empty-state i {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
+        .phone-badge { background: #2563eb; padding: 5px 16px; border-radius: 40px; font-weight: 600; font-size: 14px; color: white; }
+        .name-style { color: #93c5fd; font-weight: 500; }
+        .think-date { font-size: 11px; color: #f59e0b; margin-top: 6px; }
+        .button-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .empty-state { text-align: center; padding: 50px; color: #4a5568; }
+        .empty-state i { font-size: 50px; margin-bottom: 15px; }
         .info-box {
             background: #0f1a2f;
             border-radius: 20px;
@@ -231,25 +284,23 @@
         }
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
             font-size: 13px;
             color: #94a3b8;
         }
-        .info-grid span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .info-grid span { display: flex; align-items: center; gap: 8px; }
         .info-grid i { color: #3b82f6; width: 20px; }
-        .complaint-area {
-            margin-top: 10px;
+        .batch-result {
+            margin-top: 12px;
             padding: 10px;
-            background: #1e1b2e;
+            background: #0a1424;
             border-radius: 16px;
+            font-size: 12px;
+            color: #60a5fa;
         }
         @media (max-width: 700px) {
-            body { padding: 12px; }
+            .main-content { padding: 12px; }
             .header h1 { font-size: 22px; }
             .btn-primary, .btn-pdf { width: 100%; justify-content: center; }
             .input-group { flex-direction: column; }
@@ -257,35 +308,70 @@
     </style>
 </head>
 <body>
+
+<!-- DOĞRULAMA EKRANI -->
+<div id="verifyOverlay" class="verify-overlay">
+    <div class="verify-card">
+        <h2><i class="fas fa-shield-alt"></i> Güvenlik Doğrulaması</h2>
+        <p>Bu site özeldir. Lütfen doğrulama sorularını cevaplayın.</p>
+        <div id="questionContainer"></div>
+        <div id="attemptsInfo" class="attempts-left"></div>
+        <div id="timerInfo" class="timer-text"></div>
+        <button id="changeQuestionBtn" class="change-question"><i class="fas fa-sync-alt"></i> Soruyu Değiştir (5 hakkın var)</button>
+        <div id="warningLocked" class="warning-locked" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- LOADING EKRANI -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-content">
+        <h2><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h2>
+        <div class="loading-animation">
+            <i class="fas fa-circle-notch"></i>
+        </div>
+        <div class="loading-text" id="loadingText">Müşteri listesi hazırlanıyor...</div>
+        <div class="loading-steps" id="loadingSteps">
+            <div class="loading-step">📋 Numara kontrolü</div>
+            <div class="loading-step">👤 İsim algılama</div>
+            <div class="loading-step">💾 Veri tabanına kayıt</div>
+            <div class="loading-step">🎯 Hazır!</div>
+        </div>
+        <div class="loading-sub"><i class="fas fa-stopwatch"></i> Lütfen bekleyin...</div>
+    </div>
+</div>
+
+<!-- ANA İÇERİK -->
+<div id="mainContent" class="main-content">
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h1>
-        <p>Spor Salonu Müşteri Takip Sistemi - WhatsApp/Instagram'dan Kopyala Yapıştır</p>
+        <p>Spor Salonu Müşteri Takip Sistemi - Toplu Kopyala Yapıştır</p>
         <div class="badge-date"><i class="far fa-calendar-alt"></i> <span id="todayDate"></span></div>
     </div>
 
     <div class="info-box">
         <div class="info-grid">
-            <span><i class="fas fa-1"></i> WhatsApp/Instagram'dan kopyala: "5321234567 Nurten Hanım"</span>
-            <span><i class="fas fa-2"></i> Aşağıya yapıştır → Ekle</span>
-            <span><i class="fas fa-3"></i> Otomatik isim düzeltmesi yapılır</span>
+            <span><i class="fas fa-1"></i> WhatsApp/IG'den listeyi kopyala</span>
+            <span><i class="fas fa-2"></i> Alt alta yapıştır → Toplu Ekle</span>
+            <span><i class="fas fa-3"></i> Otomatik numara+isim algılama</span>
             <span><i class="fas fa-4"></i> AÇTI / AÇMADI / HATALI</span>
             <span><i class="fas fa-5"></i> Telefon arama (ilk/son hane)</span>
             <span><i class="fas fa-6"></i> İŞ BİTTİ ile PDF rapor</span>
         </div>
     </div>
 
-    <!-- EKLEME KARTI -->
     <div class="card">
-        <div class="card-title"><i class="fas fa-paste"></i> Numara + İsim Yapıştır (WhatsApp/Instagram'dan)</div>
+        <div class="card-title"><i class="fas fa-paste"></i> WhatsApp/Instagram'dan Listeyi Yapıştır</div>
         <div class="input-group">
-            <input type="text" id="rawInput" placeholder="📋 Örnek: 5321234567 Nurten Hanım veya sadece 5321234567">
-            <button class="btn-primary" id="addBtn"><i class="fas fa-save"></i> Kaydet</button>
+            <textarea id="rawInput" placeholder="📋 Örnek format (her satıra bir kişi):&#10;5321234567 Nurten Hanım&#10;5559876543 Kerem Bey&#10;5331112233 Deniz&#10;5445556677"></textarea>
+            <button class="btn-primary" id="addBtn"><i class="fas fa-layer-group"></i> Toplu Ekle</button>
         </div>
-        <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">💡 İsim otomatik algılanır: Nurten Hanım, Kerem Bey, Deniz Bey/Hanım (unisex)</div>
+        <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">
+            💡 Her satırda: "NUMARA İSİM" veya sadece "NUMARA". İsim otomatik Hanım/Bey eklenir. Aynı numara tekrar eklenmez.
+        </div>
+        <div id="batchResult" class="batch-result" style="display:none;"></div>
     </div>
 
-    <!-- ARAMA KARTI -->
     <div class="card">
         <div class="card-title"><i class="fas fa-search"></i> Telefon ile Müşteri Ara</div>
         <div class="input-group">
@@ -296,49 +382,276 @@
         </div>
     </div>
 
-    <!-- LİSTE BAŞLIĞI -->
     <div class="list-header">
         <h3><i class="fas fa-users"></i> Müşteri Listesi <span class="count" id="customerCount">0</span></h3>
         <button class="btn-pdf" id="exportPdf"><i class="fas fa-file-pdf"></i> İŞ BİTTİ - PDF RAPOR</button>
     </div>
 
     <div class="records-area" id="recordsList">
-        <div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıdan numara yapıştırarak başlayın</small></div>
+        <div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın</small></div>
     </div>
+</div>
 </div>
 
 <script>
-    // ========== VERİ ==========
+    // ========== DOĞRULAMA SİSTEMİ ==========
+    const QUESTIONS = [
+        {
+            text: "Kaan'ın burcu nedir?",
+            hint: "İpucu: Poyraz ile aynı",
+            answers: ["aslan", "aslan burcu", "aslan burcudur"]
+        },
+        {
+            text: "Elisa ne zaman doğmuştur?",
+            hint: "İpucu: 24 Haziran / 2017",
+            answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"]
+        },
+        {
+            text: "Poyraz ne zaman doğmuştur?",
+            hint: "İpucu: 3 Ağustos / 2009 veya 2010",
+            answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"]
+        },
+        {
+            text: "Ali ne zaman doğmuştur?",
+            hint: "İpucu: 18 Aralık 2006",
+            answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"]
+        },
+        {
+            text: "Bu siteyi kim yapmıştır?",
+            hint: "İpucu: Sadece isim",
+            answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let wrongAttempts = 0;
+    let isLocked = false;
+    let lockUntil = 0;
+    let questionChangeLeft = 5;
+    let timerInterval = null;
+
+    function loadRandomQuestion() {
+        const randomIndex = Math.floor(Math.random() * QUESTIONS.length);
+        currentQuestionIndex = randomIndex;
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = QUESTIONS[currentQuestionIndex];
+        const container = document.getElementById("questionContainer");
+        container.innerHTML = `
+            <div class="question-area">
+                <div class="question-text">${q.text}</div>
+                <div class="hint-text"><i class="fas fa-lightbulb"></i> ${q.hint}</div>
+                <input type="text" id="answerInput" class="verify-input" placeholder="Cevabınızı yazın..." autocomplete="off">
+                <button id="submitAnswer" class="verify-btn"><i class="fas fa-check"></i> Doğrula</button>
+                <div style="font-size: 11px; color:#4a5568; text-align:center; margin-top:10px;">Soru değiştirme hakkı: ${questionChangeLeft}</div>
+            </div>
+        `;
+        document.getElementById("submitAnswer").addEventListener("click", checkAnswer);
+        document.getElementById("answerInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkAnswer(); });
+    }
+
+    function checkAnswer() {
+        if (isLocked) return;
+        const input = document.getElementById("answerInput");
+        const answer = input.value.trim().toLowerCase();
+        const currentQ = QUESTIONS[currentQuestionIndex];
+        const isCorrect = currentQ.answers.some(a => answer === a.toLowerCase());
+        
+        if (isCorrect) {
+            localStorage.setItem("verified", "true");
+            showLoadingAndEnter();
+        } else {
+            wrongAttempts++;
+            updateAttemptsDisplay();
+            if (wrongAttempts >= 5) {
+                const warningLocked = document.getElementById("warningLocked");
+                warningLocked.style.display = "block";
+                warningLocked.innerHTML = "<i class='fas fa-ban'></i> Başka birisi tarafından giriş algılandı. Bu siteyi kullanamazsın!";
+                isLocked = true;
+                document.getElementById("submitAnswer").disabled = true;
+                document.getElementById("answerInput").disabled = true;
+                document.getElementById("changeQuestionBtn").disabled = true;
+                return;
+            }
+            let lockSeconds = 0;
+            if (wrongAttempts === 1) lockSeconds = 30;
+            else if (wrongAttempts === 2) lockSeconds = 60;
+            else if (wrongAttempts === 3) lockSeconds = 300;
+            else if (wrongAttempts === 4) lockSeconds = 600;
+            if (lockSeconds > 0) {
+                isLocked = true;
+                lockUntil = Date.now() + (lockSeconds * 1000);
+                startTimer(lockSeconds);
+                document.getElementById("submitAnswer").disabled = true;
+                document.getElementById("answerInput").disabled = true;
+                document.getElementById("changeQuestionBtn").disabled = true;
+            }
+            input.value = "";
+            input.placeholder = `Yanlış cevap! ${lockSeconds > 0 ? lockSeconds + " saniye bekleyin." : ""}`;
+        }
+    }
+    
+    function startTimer(seconds) {
+        if (timerInterval) clearInterval(timerInterval);
+        const timerDiv = document.getElementById("timerInfo");
+        let remaining = seconds;
+        timerDiv.innerHTML = `<i class="fas fa-hourglass-half"></i> Bekleyin: ${remaining} saniye`;
+        timerInterval = setInterval(() => {
+            if (!isLocked) { clearInterval(timerInterval); timerDiv.innerHTML = ""; return; }
+            const now = Date.now();
+            if (now >= lockUntil) {
+                clearInterval(timerInterval);
+                isLocked = false;
+                timerDiv.innerHTML = "";
+                document.getElementById("submitAnswer").disabled = false;
+                document.getElementById("answerInput").disabled = false;
+                document.getElementById("changeQuestionBtn").disabled = false;
+                document.getElementById("answerInput").value = "";
+                document.getElementById("answerInput").placeholder = "Cevabınızı yazın...";
+            } else {
+                const left = Math.ceil((lockUntil - now) / 1000);
+                timerDiv.innerHTML = `<i class="fas fa-hourglass-half"></i> Bekleyin: ${left} saniye`;
+            }
+        }, 1000);
+    }
+    
+    function updateAttemptsDisplay() {
+        const attemptsDiv = document.getElementById("attemptsInfo");
+        const remaining = 5 - wrongAttempts;
+        attemptsDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Kalan hakkınız: ${remaining}/5. ${remaining === 0 ? 'SİTE KİLİTLENDİ!' : 'Dikkatli olun!'}`;
+        if (wrongAttempts >= 4) { attemptsDiv.style.color = "#ef4444"; attemptsDiv.style.fontWeight = "bold"; }
+    }
+    
+    document.getElementById("changeQuestionBtn").addEventListener("click", () => {
+        if (isLocked) { alert("Kilitli durumdayken soru değiştiremezsiniz!"); return; }
+        if (questionChangeLeft <= 0) { alert("Soru değiştirme hakkınız kalmadı!"); return; }
+        questionChangeLeft--;
+        let newIndex = Math.floor(Math.random() * QUESTIONS.length);
+        while (newIndex === currentQuestionIndex && QUESTIONS.length > 1) { newIndex = Math.floor(Math.random() * QUESTIONS.length); }
+        currentQuestionIndex = newIndex;
+        renderQuestion();
+        document.getElementById("answerInput").value = "";
+        localStorage.setItem("questionChangeLeft", questionChangeLeft);
+    });
+    
+    function showLoadingAndEnter() {
+        document.getElementById("verifyOverlay").style.display = "none";
+        const loadingDiv = document.getElementById("loadingOverlay");
+        loadingDiv.style.display = "flex";
+        const steps = document.querySelectorAll(".loading-step");
+        const loadingText = document.getElementById("loadingText");
+        const texts = ["Müşteri listesi hazırlanıyor...", "Numaralar kontrol ediliyor...", "İsimler algılanıyor...", "Veritabanına kaydediliyor...", "Hazır! Yönlendiriliyor..."];
+        let stepIndex = 0;
+        steps.forEach((s, i) => { s.classList.remove("active"); });
+        const interval = setInterval(() => {
+            if (stepIndex < steps.length) {
+                steps[stepIndex].classList.add("active");
+                loadingText.innerText = texts[stepIndex] || "İşlem devam ediyor...";
+                stepIndex++;
+            } else {
+                clearInterval(interval);
+                setTimeout(() => {
+                    loadingDiv.style.display = "none";
+                    document.getElementById("mainContent").style.display = "block";
+                    loadMainApp();
+                }, 500);
+            }
+        }, 600);
+    }
+    
+    function checkVerification() {
+        const verified = localStorage.getItem("verified");
+        if (verified === "true") {
+            showLoadingAndEnter();
+        } else {
+            document.getElementById("verifyOverlay").style.display = "flex";
+            document.getElementById("mainContent").style.display = "none";
+            loadRandomQuestion();
+            const savedChanges = localStorage.getItem("questionChangeLeft");
+            if (savedChanges !== null) questionChangeLeft = parseInt(savedChanges);
+            const savedAttempts = localStorage.getItem("wrongAttempts");
+            if (savedAttempts !== null) wrongAttempts = parseInt(savedAttempts);
+            updateAttemptsDisplay();
+        }
+    }
+    
+    // ========== ANA UYGULAMA ==========
     const STORAGE_KEY = "teyze_full_crm";
     let customers = [];
 
-    // Tarih
-    document.getElementById("todayDate").innerText = new Date().toLocaleDateString("tr-TR", { year: 'numeric', month: 'long', day: 'numeric' });
+    function loadMainApp() {
+        document.getElementById("todayDate").innerText = new Date().toLocaleDateString("tr-TR", { year: 'numeric', month: 'long', day: 'numeric' });
+        loadFromLocal();
+        attachMainEvents();
+    }
 
-    // İsim formatlama (kadın/erkek/unisex)
     function formatNameWithTitle(rawName) {
         if (!rawName || rawName.trim() === "") return "İsimsiz Müşteri";
         const name = rawName.trim();
-        const kadin = ["nurten", "fatma", "ayşe", "emine", "zeynep", "hatice", "gül", "sibel", "merve", "sultan", "canan", "gülnur", "aysun", "sevgi", "filiz"];
-        const erkek = ["kerem", "ahmet", "mehmet", "mustafa", "ali", "veli", "can", "burak", "emre", "kaan", "hakan", "murat", "serkan", "volkan"];
+        const kadin = ["nurten", "fatma", "ayşe", "emine", "zeynep", "hatice", "gül", "sibel", "merve", "sultan", "canan", "gülnur", "aysun", "sevgi", "filiz", "selin", "pınar", "dilara", "ece", "ipek"];
+        const erkek = ["kerem", "ahmet", "mehmet", "mustafa", "ali", "veli", "can", "burak", "emre", "kaan", "hakan", "murat", "serkan", "volkan", "erdem", "berk", "tolga", "kaan emre"];
         const lower = name.toLowerCase();
         if (kadin.includes(lower)) return name + " Hanım";
         if (erkek.includes(lower)) return name + " Bey";
         return name + " Bey/Hanım";
     }
 
-    // Numara + isim ayır (WhatsApp/Instagram formatı)
-    function parsePhoneAndName(raw) {
+    function parsePhoneAndNameFromLine(line) {
         let phone = "", name = "";
-        const parts = raw.trim().split(/\s+/);
+        const parts = line.trim().split(/\s+/);
         if (parts.length > 0 && /^\d+$/.test(parts[0])) {
             phone = parts[0];
             name = parts.slice(1).join(" ");
         } else {
-            phone = raw.replace(/\D/g, "");
-            name = raw.replace(/[\d\s]/g, "").trim();
+            phone = line.replace(/\D/g, "");
+            name = line.replace(/[\d\s]/g, "").trim();
         }
         return { phone, name };
+    }
+
+    // TOPLU EKLEME
+    function addBatchCustomers(rawText) {
+        const lines = rawText.split(/\r?\n/);
+        let added = 0;
+        let duplicate = 0;
+        let invalid = 0;
+        
+        for (const line of lines) {
+            if (line.trim() === "") continue;
+            let { phone, name } = parsePhoneAndNameFromLine(line);
+            if (!phone || phone.length < 5) {
+                invalid++;
+                continue;
+            }
+            if (customers.find(c => c.phone === phone)) {
+                duplicate++;
+                continue;
+            }
+            const displayName = formatNameWithTitle(name);
+            const newCust = {
+                id: Date.now() + "_" + Math.random() + "_" + phone,
+                phone: phone,
+                rawName: name,
+                displayName: displayName,
+                status: "beklemede",
+                callResult: null,
+                complaint: "",
+                thinkDate: null,
+                createdAt: new Date().toISOString()
+            };
+            customers.push(newCust);
+            added++;
+        }
+        saveToLocal();
+        
+        const batchDiv = document.getElementById("batchResult");
+        batchDiv.style.display = "block";
+        batchDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${added} kişi eklendi, ${duplicate} kişi zaten vardı, ${invalid} geçersiz satır atlandı.`;
+        setTimeout(() => { batchDiv.style.display = "none"; }, 4000);
+        
+        if (added > 0) alert(`✅ ${added} müşteri başarıyla eklendi!`);
     }
 
     function saveToLocal() {
@@ -352,52 +665,56 @@
         renderList();
     }
 
-    // EKLE
-    document.getElementById("addBtn").addEventListener("click", () => {
-        const raw = document.getElementById("rawInput").value.trim();
-        if (!raw) return alert("Lütfen numara ve isim yapıştırın!");
-        let { phone, name } = parsePhoneAndName(raw);
-        if (!phone || phone.length < 5) return alert("Geçerli bir telefon numarası girin!");
-        if (customers.find(c => c.phone === phone)) {
-            alert("Bu numara zaten kayıtlı!");
+    function attachMainEvents() {
+        document.getElementById("addBtn").onclick = () => {
+            const raw = document.getElementById("rawInput").value.trim();
+            if (!raw) return alert("Lütfen listeyi yapıştırın!");
+            addBatchCustomers(raw);
             document.getElementById("rawInput").value = "";
-            return;
-        }
-        const displayName = formatNameWithTitle(name);
-        const newCust = {
-            id: Date.now() + "_" + Math.random(),
-            phone: phone,
-            rawName: name,
-            displayName: displayName,
-            status: "beklemede",
-            callResult: null,
-            complaint: "",
-            thinkDate: null,
-            createdAt: new Date().toISOString()
         };
-        customers.push(newCust);
-        saveToLocal();
-        document.getElementById("rawInput").value = "";
-        alert("✅ Kaydedildi: " + phone + " - " + displayName);
-    });
 
-    // ARAMA (ilk veya son haneler)
-    document.getElementById("searchInput").addEventListener("input", (e) => {
-        const q = e.target.value.trim();
-        const resultDiv = document.getElementById("searchResultArea");
-        if (!q) {
-            resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek';
-            return;
-        }
-        const found = customers.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
-        if (found) {
-            resultDiv.innerHTML = `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})`;
-        } else {
-            resultDiv.innerHTML = `<i class="fas fa-user-slash"></i> ❌ Bu kişinin ismine ulaşılamadı ya da yok (${q})`;
-        }
-    });
+        document.getElementById("searchInput").oninput = (e) => {
+            const q = e.target.value.trim();
+            const resultDiv = document.getElementById("searchResultArea");
+            if (!q) {
+                resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek';
+                return;
+            }
+            const found = customers.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
+            if (found) {
+                resultDiv.innerHTML = `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})`;
+            } else {
+                resultDiv.innerHTML = `<i class="fas fa-user-slash"></i> ❌ Bu kişinin ismine ulaşılamadı ya da yok (${q})`;
+            }
+        };
 
-    // DURUM GÜNCELLEME
+        document.getElementById("exportPdf").onclick = () => {
+            if (typeof jspdf === 'undefined') return alert("PDF kütüphanesi yükleniyor, bekleyin...");
+            const { jsPDF } = jspdf;
+            const doc = new jsPDF();
+            const today = new Date().toLocaleDateString("tr-TR");
+            doc.setFontSize(16);
+            doc.text(`${today} İŞ RAPORU`, 20, 20);
+            let y = 35;
+            customers.forEach(c => {
+                let durum = "";
+                if (c.callResult === "MEMNUN") durum = "MEMNUN";
+                else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYETİ: ${c.complaint || "yok"}`;
+                else if (c.callResult === "DÜŞÜNÜCEK") durum = `DÜŞÜNÜCEK (${c.thinkDate})`;
+                else if (c.callResult === "BİR_DAHA_ALICAK") durum = "TEKRAR ALICAK";
+                else if (c.callResult === "BİR_DAHA_ALMICAK") durum = "ALMAYACAK";
+                else if (c.callResult === "GERİ_DÖNMEDİ") durum = "GERİ DÖNMEDİ";
+                else if (c.status === "hatali") durum = "HATALI NUMARA";
+                else durum = "GÖRÜŞME YAPILMADI";
+                doc.setFontSize(10);
+                doc.text(`${c.phone} - ${c.displayName} ; ${durum}`, 20, y);
+                y += 8;
+                if (y > 270) { doc.addPage(); y = 20; }
+            });
+            doc.save(`is_raporu_${today.replace(/\//g, "-")}.pdf`);
+        };
+    }
+
     function updateStatus(id, action, extra = {}) {
         const idx = customers.findIndex(c => c.id === id);
         if (idx === -1) return;
@@ -418,13 +735,13 @@
         saveToLocal();
     }
 
-    // LİSTELEME
     function renderList() {
         const container = document.getElementById("recordsList");
         const countSpan = document.getElementById("customerCount");
+        if (!container) return;
         countSpan.innerText = customers.length;
         if (!customers.length) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıdan numara yapıştırarak başlayın</small></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın</small></div>`;
             return;
         }
         container.innerHTML = customers.map(c => {
@@ -473,7 +790,6 @@
             `;
         }).join("");
 
-        // Buton olayları
         document.querySelectorAll("[data-act]").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const id = btn.getAttribute("data-id");
@@ -489,34 +805,7 @@
         });
     }
 
-    // PDF RAPOR
-    document.getElementById("exportPdf").addEventListener("click", () => {
-        if (typeof jspdf === 'undefined') return alert("PDF kütüphanesi yükleniyor, bekleyin...");
-        const { jsPDF } = jspdf;
-        const doc = new jsPDF();
-        const today = new Date().toLocaleDateString("tr-TR");
-        doc.setFontSize(16);
-        doc.text(`${today} İŞ RAPORU`, 20, 20);
-        let y = 35;
-        customers.forEach(c => {
-            let durum = "";
-            if (c.callResult === "MEMNUN") durum = "MEMNUN";
-            else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYETİ: ${c.complaint || "yok"}`;
-            else if (c.callResult === "DÜŞÜNÜCEK") durum = `DÜŞÜNÜCEK (${c.thinkDate})`;
-            else if (c.callResult === "BİR_DAHA_ALICAK") durum = "TEKRAR ALICAK";
-            else if (c.callResult === "BİR_DAHA_ALMICAK") durum = "ALMAYACAK";
-            else if (c.callResult === "GERİ_DÖNMEDİ") durum = "GERİ DÖNMEDİ";
-            else if (c.status === "hatali") durum = "HATALI NUMARA";
-            else durum = "GÖRÜŞME YAPILMADI";
-            doc.setFontSize(10);
-            doc.text(`${c.phone} - ${c.displayName} ; ${durum}`, 20, y);
-            y += 8;
-            if (y > 270) { doc.addPage(); y = 20; }
-        });
-        doc.save(`is_raporu_${today.replace(/\//g, "-")}.pdf`);
-    });
-
-    loadFromLocal();
+    checkVerification();
 </script>
 </body>
 </html>
