@@ -100,6 +100,84 @@
         }
         .warning-locked { text-align: center; color: #ef4444; font-size: 14px; margin-top: 15px; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 16px; }
         
+        /* ADMIN TEST MOD BUTONU */
+        .admin-test-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .admin-test-btn:hover {
+            transform: scale(0.98);
+        }
+        
+        /* ŞİFRE MODAL */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-card {
+            background: #111c2e;
+            border-radius: 32px;
+            padding: 35px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #8b5cf6;
+        }
+        .password-card h3 {
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .password-card input {
+            width: 100%;
+            background: #0a1424;
+            border: 1px solid #1e3a5f;
+            padding: 14px 18px;
+            border-radius: 60px;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        .password-card button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-admin {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
         /* LOADING EKRANI */
         .loading-overlay {
             position: fixed;
@@ -141,6 +219,7 @@
             padding: 25px 30px;
             margin-bottom: 25px;
             border: 1px solid rgba(59, 130, 246, 0.4);
+            position: relative;
         }
         .header h1 { font-size: 28px; color: white; }
         .header h1 i { color: #3b82f6; margin-right: 12px; }
@@ -153,6 +232,33 @@
             font-size: 13px;
             color: #60a5fa;
             margin-top: 12px;
+        }
+        .mode-badge {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: #ef4444;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        .mode-badge.test-mode {
+            background: #8b5cf6;
+        }
+        .mode-badge.real-mode {
+            background: #10b981;
+        }
+        .switch-mode-btn {
+            background: #334155;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 10px;
         }
         .card {
             background: #111c2e;
@@ -276,7 +382,7 @@
         .empty-state { text-align: center; padding: 50px; color: #4a5568; }
         .empty-state i { font-size: 50px; margin-bottom: 15px; }
         
-        /* YENİ BİLGİ KUTUSU - DAHA ANLAŞILIR */
+        /* BİLGİ KUTUSU */
         .info-card {
             background: linear-gradient(135deg, #0f1a2f, #0a1424);
             border-radius: 24px;
@@ -379,6 +485,8 @@
             .input-group { flex-direction: column; }
             .step-item { flex-direction: column; }
             .step-number { width: 28px; height: 28px; font-size: 12px; }
+            .mode-badge { position: static; display: inline-block; margin-top: 15px; }
+            .header { text-align: center; }
         }
     </style>
 </head>
@@ -393,7 +501,20 @@
         <div id="attemptsInfo" class="attempts-left"></div>
         <div id="timerInfo" class="timer-text"></div>
         <button id="changeQuestionBtn" class="change-question"><i class="fas fa-sync-alt"></i> Soruyu Değiştir (5 hakkın var)</button>
+        <button id="adminTestBtn" class="admin-test-btn"><i class="fas fa-user-shield"></i> Admin Test Modu (Şifreli)</button>
         <div id="warningLocked" class="warning-locked" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- ŞİFRE MODAL -->
+<div id="passwordModal" class="password-modal">
+    <div class="password-card">
+        <h3><i class="fas fa-key"></i> Admin Test Modu</h3>
+        <p style="color:#94a3b8; font-size:13px; margin-bottom:15px;">Bu modda yapılan işlemler GERÇEK VERİYE İŞLENMEZ. Sadece test amaçlıdır.</p>
+        <input type="password" id="adminPassword" placeholder="Şifreyi girin">
+        <button id="submitPassword" class="btn-admin"><i class="fas fa-unlock-alt"></i> Giriş Yap</button>
+        <div id="passwordError" class="error-msg"></div>
+        <button id="closePasswordModal" style="background:#334155; color:white; margin-top:10px;">Vazgeç</button>
     </div>
 </div>
 
@@ -422,9 +543,13 @@
         <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h1>
         <p>Spor Salonu Müşteri Takip Sistemi - Toplu Kopyala Yapıştır</p>
         <div class="badge-date"><i class="far fa-calendar-alt"></i> <span id="todayDate"></span></div>
+        <div style="margin-top: 15px;">
+            <span id="modeBadge" class="mode-badge real-mode"><i class="fas fa-database"></i> GERÇEK MOD</span>
+            <button id="switchModeBtn" class="switch-mode-btn"><i class="fas fa-exchange-alt"></i> Test Moduna Geç</button>
+        </div>
     </div>
 
-    <!-- YENİ BİLGİ KUTUSU - AÇILIR KAPANIR -->
+    <!-- BİLGİ KUTUSU -->
     <div class="info-card">
         <div class="info-header" id="infoHeader">
             <span><i class="fas fa-info-circle"></i> 📌 SİTE NASIL KULLANILIR?</span>
@@ -494,8 +619,7 @@
                             <i class="fas fa-file-pdf"></i> PDF içeriği örneği:<br>
                             07/04/2026 İŞ RAPORU<br>
                             5321234567 - Nurten Hanım ; MEMNUN<br>
-                            5559876543 - Kerem Bey ; MEMNUN DEĞİL, ŞİKAYETİ: Fiyatlar yüksek<br>
-                            5331112233 - Deniz Bey/Hanım ; DÜŞÜNÜCEK (07.04.2026 14:30)
+                            5559876543 - Kerem Bey ; MEMNUN DEĞİL, ŞİKAYETİ: Fiyatlar yüksek
                         </div>
                     </div>
                 </div>
@@ -541,24 +665,27 @@
     const QUESTIONS = [
         {
             text: "Kaan'ın burcu nedir?",
-            hint: "Poyraz ile aynı",
+            hint: "İpucu: Aslanların kralı, Poyraz ile aynı",
             answers: ["aslan", "aslan burcu", "aslan burcudur"]
         },
         {
             text: "Elisa ne zaman doğmuştur?",
+            hint: "İpucu: 24 Haziran / 2017",
             answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"]
         },
         {
             text: "Poyraz ne zaman doğmuştur?",
+            hint: "İpucu: 3 Ağustos / 2009 veya 2010",
             answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"]
         },
         {
             text: "Ali ne zaman doğmuştur?",
+            hint: "İpucu: 18 Aralık 2006",
             answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"]
         },
         {
             text: "Bu siteyi kim yapmıştır?",
-            hint: "İpucu: En sevdiğin yeğenin.",
+            hint: "İpucu: En sevdiğin yeğenin, ismi K ile başlıyor",
             answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"]
         }
     ];
@@ -569,6 +696,10 @@
     let lockUntil = 0;
     let questionChangeLeft = 5;
     let timerInterval = null;
+    
+    // Admin Test Mod Değişkenleri
+    let isTestMode = false;
+    let testCustomers = [];
 
     function loadRandomQuestion() {
         const randomIndex = Math.floor(Math.random() * QUESTIONS.length);
@@ -676,6 +807,32 @@
         localStorage.setItem("questionChangeLeft", questionChangeLeft);
     });
     
+    // ADMIN TEST MOD ŞİFRE
+    document.getElementById("adminTestBtn").addEventListener("click", () => {
+        document.getElementById("passwordModal").style.display = "flex";
+    });
+    
+    document.getElementById("submitPassword").addEventListener("click", () => {
+        const password = document.getElementById("adminPassword").value;
+        if (password === "Gake0623") {
+            document.getElementById("passwordModal").style.display = "none";
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("passwordError").innerHTML = "";
+            // Admin test moduna geç
+            isTestMode = true;
+            localStorage.setItem("verified", "true");
+            showLoadingAndEnter();
+        } else {
+            document.getElementById("passwordError").innerHTML = "❌ Hatalı şifre! Tekrar deneyin.";
+        }
+    });
+    
+    document.getElementById("closePasswordModal").addEventListener("click", () => {
+        document.getElementById("passwordModal").style.display = "none";
+        document.getElementById("adminPassword").value = "";
+        document.getElementById("passwordError").innerHTML = "";
+    });
+    
     function showLoadingAndEnter() {
         document.getElementById("verifyOverlay").style.display = "none";
         const loadingDiv = document.getElementById("loadingOverlay");
@@ -721,6 +878,43 @@
     const STORAGE_KEY = "teyze_full_crm";
     let customers = [];
 
+    // Mod değiştirme
+    function updateModeUI() {
+        const modeBadge = document.getElementById("modeBadge");
+        const switchBtn = document.getElementById("switchModeBtn");
+        if (isTestMode) {
+            modeBadge.className = "mode-badge test-mode";
+            modeBadge.innerHTML = '<i class="fas fa-flask"></i> TEST MODU (Veri işlenmez)';
+            switchBtn.innerHTML = '<i class="fas fa-database"></i> Gerçek Moda Geç';
+            switchBtn.style.background = "#10b981";
+        } else {
+            modeBadge.className = "mode-badge real-mode";
+            modeBadge.innerHTML = '<i class="fas fa-database"></i> GERÇEK MOD';
+            switchBtn.innerHTML = '<i class="fas fa-flask"></i> Test Moduna Geç';
+            switchBtn.style.background = "#8b5cf6";
+        }
+    }
+    
+    document.getElementById("switchModeBtn").addEventListener("click", () => {
+        if (isTestMode) {
+            // Test modundan gerçek moda geçiş
+            if (confirm("Gerçek moda geçerseniz test verileriniz kaybolacak. Devam etmek istiyor musunuz?")) {
+                isTestMode = false;
+                testCustomers = [];
+                loadFromLocal();
+                updateModeUI();
+            }
+        } else {
+            // Gerçek moddan test moduna geçiş
+            if (confirm("Test moduna geçerseniz yaptığınız işlemler GERÇEK VERİYE İŞLENMEYECEK. Devam etmek istiyor musunuz?")) {
+                isTestMode = true;
+                testCustomers = [];
+                renderList();
+                updateModeUI();
+            }
+        }
+    });
+
     // Bilgi kutusu aç/kapa
     document.getElementById("infoHeader").addEventListener("click", () => {
         const body = document.getElementById("infoBody");
@@ -731,8 +925,13 @@
 
     function loadMainApp() {
         document.getElementById("todayDate").innerText = new Date().toLocaleDateString("tr-TR", { year: 'numeric', month: 'long', day: 'numeric' });
-        loadFromLocal();
+        if (!isTestMode) {
+            loadFromLocal();
+        } else {
+            renderList();
+        }
         attachMainEvents();
+        updateModeUI();
     }
 
     function formatNameWithTitle(rawName) {
@@ -765,6 +964,9 @@
         let duplicate = 0;
         let invalid = 0;
         
+        // Hangi veriyi kullanacağımızı seç
+        const targetList = isTestMode ? testCustomers : customers;
+        
         for (const line of lines) {
             if (line.trim() === "") continue;
             let { phone, name } = parsePhoneAndNameFromLine(line);
@@ -772,7 +974,7 @@
                 invalid++;
                 continue;
             }
-            if (customers.find(c => c.phone === phone)) {
+            if (targetList.find(c => c.phone === phone)) {
                 duplicate++;
                 continue;
             }
@@ -788,17 +990,23 @@
                 thinkDate: null,
                 createdAt: new Date().toISOString()
             };
-            customers.push(newCust);
+            targetList.push(newCust);
             added++;
         }
-        saveToLocal();
+        
+        if (!isTestMode) {
+            saveToLocal();
+        } else {
+            renderList();
+        }
         
         const batchDiv = document.getElementById("batchResult");
         batchDiv.style.display = "block";
-        batchDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ${added} kişi eklendi, ${duplicate} kişi zaten vardı, ${invalid} geçersiz satır atlandı.`;
+        const modText = isTestMode ? " (TEST MODU - Veri işlenmedi)" : "";
+        batchDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ${added} kişi eklendi${modText}, ${duplicate} kişi zaten vardı, ${invalid} geçersiz satır atlandı.`;
         setTimeout(() => { batchDiv.style.display = "none"; }, 4000);
         
-        if (added > 0) alert(`✅ ${added} müşteri başarıyla eklendi!`);
+        if (added > 0) alert(`✅ ${added} müşteri başarıyla eklendi!${isTestMode ? " (TEST MODU)" : ""}`);
     }
 
     function saveToLocal() {
@@ -823,11 +1031,12 @@
         document.getElementById("searchInput").oninput = (e) => {
             const q = e.target.value.trim();
             const resultDiv = document.getElementById("searchResultArea");
+            const targetList = isTestMode ? testCustomers : customers;
             if (!q) {
                 resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek';
                 return;
             }
-            const found = customers.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
+            const found = targetList.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
             if (found) {
                 resultDiv.innerHTML = `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})`;
             } else {
@@ -841,9 +1050,11 @@
             const doc = new jsPDF();
             const today = new Date().toLocaleDateString("tr-TR");
             doc.setFontSize(16);
-            doc.text(`${today} İŞ RAPORU`, 20, 20);
+            const targetList = isTestMode ? testCustomers : customers;
+            const modText = isTestMode ? " (TEST MODU - GERÇEK VERİ DEĞİL)" : "";
+            doc.text(`${today} İŞ RAPORU${modText}`, 20, 20);
             let y = 35;
-            customers.forEach(c => {
+            targetList.forEach(c => {
                 let durum = "";
                 if (c.callResult === "MEMNUN") durum = "MEMNUN";
                 else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYETİ: ${c.complaint || "yok"}`;
@@ -858,14 +1069,15 @@
                 y += 8;
                 if (y > 270) { doc.addPage(); y = 20; }
             });
-            doc.save(`is_raporu_${today.replace(/\//g, "-")}.pdf`);
+            doc.save(`is_raporu_${today.replace(/\//g, "-")}${isTestMode ? "_test" : ""}.pdf`);
         };
     }
 
     function updateStatus(id, action, extra = {}) {
-        const idx = customers.findIndex(c => c.id === id);
+        const targetList = isTestMode ? testCustomers : customers;
+        const idx = targetList.findIndex(c => c.id === id);
         if (idx === -1) return;
-        const c = customers[idx];
+        const c = targetList[idx];
         if (action === "acti") { c.status = "acti"; c.callResult = null; }
         else if (action === "acmadi") { c.status = "acmadi"; c.callResult = "GERİ_DÖNMEDİ"; }
         else if (action === "hatali") { c.status = "hatali"; c.callResult = "HATALI/EKSİK"; }
@@ -876,22 +1088,25 @@
             c.callResult = val;
             if (val === "DÜŞÜNÜCEK") c.thinkDate = new Date().toLocaleString("tr-TR");
             if (val === "MEMNUN_DEĞİL" && extra.complaint !== undefined) c.complaint = extra.complaint;
-            saveToLocal();
+            if (!isTestMode) saveToLocal();
+            else renderList();
             return;
         }
-        saveToLocal();
+        if (!isTestMode) saveToLocal();
+        else renderList();
     }
 
     function renderList() {
         const container = document.getElementById("recordsList");
         const countSpan = document.getElementById("customerCount");
         if (!container) return;
-        countSpan.innerText = customers.length;
-        if (!customers.length) {
+        const targetList = isTestMode ? testCustomers : customers;
+        countSpan.innerText = targetList.length;
+        if (!targetList.length) {
             container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın</small></div>`;
             return;
         }
-        container.innerHTML = customers.map(c => {
+        container.innerHTML = targetList.map(c => {
             let buttons = "";
             if (c.status === "beklemede") {
                 buttons = `<div class="button-bar">
