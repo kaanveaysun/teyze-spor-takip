@@ -2,59 +2,521 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Aysun Hanım - Spor Salonu Takip</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Aysun Hanım - Spor Salonu Takip Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta name="theme-color" content="#1e2f41">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0a1628 0%, #0f1a2f 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #1e3a5f, #0f2b44);
+            border-radius: 28px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+        .header h1 {
+            font-size: 28px;
+            color: white;
+        }
+        .header h1 i {
+            color: #3b82f6;
+            margin-right: 12px;
+        }
+        .header p {
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+        .badge-date {
+            background: rgba(59, 130, 246, 0.2);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #60a5fa;
+            margin-top: 12px;
+        }
+        /* KARTLAR */
+        .card {
+            background: #111c2e;
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
+            border: 1px solid #1e3a5f;
+            transition: 0.3s;
+        }
+        .card:hover {
+            border-color: #3b82f6;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* INPUT */
+        .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            background: #0a1424;
+            border: 1px solid #1e3a5f;
+            padding: 14px 20px;
+            border-radius: 60px;
+            color: white;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .input-group input::placeholder {
+            color: #4a5568;
+        }
+        /* BUTONLAR */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pdf {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-sm {
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-success { background: #10b981; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-info { background: #3b82f6; color: white; }
+        .btn-dark { background: #334155; color: white; }
+        /* ARAMA */
+        .search-result {
+            background: #0a1424;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-top: 15px;
+            border-left: 4px solid #3b82f6;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+        /* LİSTE */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 25px 0 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .list-header h3 {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .count {
+            background: #3b82f6;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+        }
+        .records-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .record-item {
+            background: #0f1a2f;
+            border-radius: 20px;
+            padding: 18px 22px;
+            border: 1px solid #1e3a5f;
+            transition: 0.2s;
+        }
+        .record-item:hover {
+            background: #13213b;
+            border-color: #3b82f6;
+        }
+        .record-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .phone-badge {
+            background: #2563eb;
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+        }
+        .name-style {
+            color: #93c5fd;
+            font-weight: 500;
+        }
+        .think-date {
+            font-size: 11px;
+            color: #f59e0b;
+            margin-top: 6px;
+        }
+        .button-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #4a5568;
+        }
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .info-box {
+            background: #0f1a2f;
+            border-radius: 20px;
+            padding: 16px 22px;
+            margin-bottom: 20px;
+            border: 1px solid #1e3a5f;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .info-grid span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-grid i { color: #3b82f6; width: 20px; }
+        .complaint-area {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1e1b2e;
+            border-radius: 16px;
+        }
+        @media (max-width: 700px) {
+            body { padding: 12px; }
+            .header h1 { font-size: 22px; }
+            .btn-primary, .btn-pdf { width: 100%; justify-content: center; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <div class="welcome-header">
-            <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım...</h1>
-            <p class="subtitle">Numara takip & Müşteri yönetimi | Mobil Destekli</p>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h1>
+        <p>Spor Salonu Müşteri Takip Sistemi - WhatsApp/Instagram'dan Kopyala Yapıştır</p>
+        <div class="badge-date"><i class="far fa-calendar-alt"></i> <span id="todayDate"></span></div>
+    </div>
 
-        <div class="info-card">
-            <i class="fas fa-info-circle"></i> 
-            <strong>📌 BİLGİ KISMI:</strong> 
-            <ul>
-                <li>🔹 <strong>Numara + İsim ekle:</strong> Altaki kutuya <u>numara ve isim</u> yapıştır (örnek: 5551234567 Nurten Hanım)</li>
-                <li>🔹 Kayıtlar <strong>otomatik hatırlanır</strong>, bir daha yazmaya gerek yok</li>
-                <li>🔹 Her satırda: AÇTI / AÇMADI / HATALI butonları</li>
-                <li>🔹 "AÇTI" ise memnuniyet, "AÇMADI" ise geri dönüş butonları</li>
-                <li>🔹 <strong>Telefon ara:</strong> Arama kutusuna ilk/son haneleri yazın, "Nurten Hanım arıyor" gösterir</li>
-                <li>🔹 <strong>İŞ BİTTİ</strong> butonu PDF rapor oluşturur</li>
-            </ul>
-        </div>
-
-        <div class="add-card">
-            <div class="input-group">
-                <input type="text" id="rawDataInput" placeholder="📞 5321234567 Nurten Hanım" class="premium-input">
-                <button id="addBtn" class="btn-primary"><i class="fas fa-plus-circle"></i> Ekle</button>
-            </div>
-            <small><i class="fas fa-database"></i> Eklediğiniz kayıtlar otomatik kaydedilir</small>
-        </div>
-
-        <div class="search-card">
-            <div class="input-group">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchPhone" placeholder="Telefonun ilk veya son haneleri... (örn: 532)" class="premium-input">
-            </div>
-            <div id="searchResult" class="search-result-box">🔍 Telefon yazın, eşleşen müşteri görünecek</div>
-        </div>
-
-        <div class="records-header">
-            <h3><i class="fas fa-list-ul"></i> Müşteri Listesi</h3>
-            <button id="exportPdfBtn" class="btn-success"><i class="fas fa-file-pdf"></i> 📄 İŞ BİTTİ (PDF)</button>
-        </div>
-
-        <div id="recordsList" class="records-container">
-            <div class="record-card" style="text-align:center;">Yukarıdan numara ekleyin</div>
+    <div class="info-box">
+        <div class="info-grid">
+            <span><i class="fas fa-1"></i> WhatsApp/Instagram'dan kopyala: "5321234567 Nurten Hanım"</span>
+            <span><i class="fas fa-2"></i> Aşağıya yapıştır → Ekle</span>
+            <span><i class="fas fa-3"></i> Otomatik isim düzeltmesi yapılır</span>
+            <span><i class="fas fa-4"></i> AÇTI / AÇMADI / HATALI</span>
+            <span><i class="fas fa-5"></i> Telefon arama (ilk/son hane)</span>
+            <span><i class="fas fa-6"></i> İŞ BİTTİ ile PDF rapor</span>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="app.js"></script>
+
+    <!-- EKLEME KARTI -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-paste"></i> Numara + İsim Yapıştır (WhatsApp/Instagram'dan)</div>
+        <div class="input-group">
+            <input type="text" id="rawInput" placeholder="📋 Örnek: 5321234567 Nurten Hanım veya sadece 5321234567">
+            <button class="btn-primary" id="addBtn"><i class="fas fa-save"></i> Kaydet</button>
+        </div>
+        <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">💡 İsim otomatik algılanır: Nurten Hanım, Kerem Bey, Deniz Bey/Hanım (unisex)</div>
+    </div>
+
+    <!-- ARAMA KARTI -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-search"></i> Telefon ile Müşteri Ara</div>
+        <div class="input-group">
+            <input type="text" id="searchInput" placeholder="📱 Telefonun ilk veya son hanelerini yaz (örn: 532 veya 4567)">
+        </div>
+        <div class="search-result" id="searchResultArea">
+            <i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek
+        </div>
+    </div>
+
+    <!-- LİSTE BAŞLIĞI -->
+    <div class="list-header">
+        <h3><i class="fas fa-users"></i> Müşteri Listesi <span class="count" id="customerCount">0</span></h3>
+        <button class="btn-pdf" id="exportPdf"><i class="fas fa-file-pdf"></i> İŞ BİTTİ - PDF RAPOR</button>
+    </div>
+
+    <div class="records-area" id="recordsList">
+        <div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıdan numara yapıştırarak başlayın</small></div>
+    </div>
+</div>
+
+<script>
+    // ========== VERİ ==========
+    const STORAGE_KEY = "teyze_full_crm";
+    let customers = [];
+
+    // Tarih
+    document.getElementById("todayDate").innerText = new Date().toLocaleDateString("tr-TR", { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // İsim formatlama (kadın/erkek/unisex)
+    function formatNameWithTitle(rawName) {
+        if (!rawName || rawName.trim() === "") return "İsimsiz Müşteri";
+        const name = rawName.trim();
+        const kadin = ["nurten", "fatma", "ayşe", "emine", "zeynep", "hatice", "gül", "sibel", "merve", "sultan", "canan", "gülnur", "aysun", "sevgi", "filiz"];
+        const erkek = ["kerem", "ahmet", "mehmet", "mustafa", "ali", "veli", "can", "burak", "emre", "kaan", "hakan", "murat", "serkan", "volkan"];
+        const lower = name.toLowerCase();
+        if (kadin.includes(lower)) return name + " Hanım";
+        if (erkek.includes(lower)) return name + " Bey";
+        return name + " Bey/Hanım";
+    }
+
+    // Numara + isim ayır (WhatsApp/Instagram formatı)
+    function parsePhoneAndName(raw) {
+        let phone = "", name = "";
+        const parts = raw.trim().split(/\s+/);
+        if (parts.length > 0 && /^\d+$/.test(parts[0])) {
+            phone = parts[0];
+            name = parts.slice(1).join(" ");
+        } else {
+            phone = raw.replace(/\D/g, "");
+            name = raw.replace(/[\d\s]/g, "").trim();
+        }
+        return { phone, name };
+    }
+
+    function saveToLocal() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
+        renderList();
+    }
+
+    function loadFromLocal() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        customers = data ? JSON.parse(data) : [];
+        renderList();
+    }
+
+    // EKLE
+    document.getElementById("addBtn").addEventListener("click", () => {
+        const raw = document.getElementById("rawInput").value.trim();
+        if (!raw) return alert("Lütfen numara ve isim yapıştırın!");
+        let { phone, name } = parsePhoneAndName(raw);
+        if (!phone || phone.length < 5) return alert("Geçerli bir telefon numarası girin!");
+        if (customers.find(c => c.phone === phone)) {
+            alert("Bu numara zaten kayıtlı!");
+            document.getElementById("rawInput").value = "";
+            return;
+        }
+        const displayName = formatNameWithTitle(name);
+        const newCust = {
+            id: Date.now() + "_" + Math.random(),
+            phone: phone,
+            rawName: name,
+            displayName: displayName,
+            status: "beklemede",
+            callResult: null,
+            complaint: "",
+            thinkDate: null,
+            createdAt: new Date().toISOString()
+        };
+        customers.push(newCust);
+        saveToLocal();
+        document.getElementById("rawInput").value = "";
+        alert("✅ Kaydedildi: " + phone + " - " + displayName);
+    });
+
+    // ARAMA (ilk veya son haneler)
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+        const q = e.target.value.trim();
+        const resultDiv = document.getElementById("searchResultArea");
+        if (!q) {
+            resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek';
+            return;
+        }
+        const found = customers.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
+        if (found) {
+            resultDiv.innerHTML = `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})`;
+        } else {
+            resultDiv.innerHTML = `<i class="fas fa-user-slash"></i> ❌ Bu kişinin ismine ulaşılamadı ya da yok (${q})`;
+        }
+    });
+
+    // DURUM GÜNCELLEME
+    function updateStatus(id, action, extra = {}) {
+        const idx = customers.findIndex(c => c.id === id);
+        if (idx === -1) return;
+        const c = customers[idx];
+        if (action === "acti") { c.status = "acti"; c.callResult = null; }
+        else if (action === "acmadi") { c.status = "acmadi"; c.callResult = "GERİ_DÖNMEDİ"; }
+        else if (action === "hatali") { c.status = "hatali"; c.callResult = "HATALI/EKSİK"; }
+        else if (action === "geri_döndü") { c.status = "acti"; c.callResult = null; }
+        else if (action === "geri_dönmedi") { c.status = "acmadi"; c.callResult = "GERİ_DÖNMEDİ"; }
+        else if (action.startsWith("sonuc_")) {
+            const val = action.replace("sonuc_", "");
+            c.callResult = val;
+            if (val === "DÜŞÜNÜCEK") c.thinkDate = new Date().toLocaleString("tr-TR");
+            if (val === "MEMNUN_DEĞİL" && extra.complaint !== undefined) c.complaint = extra.complaint;
+            saveToLocal();
+            return;
+        }
+        saveToLocal();
+    }
+
+    // LİSTELEME
+    function renderList() {
+        const container = document.getElementById("recordsList");
+        const countSpan = document.getElementById("customerCount");
+        countSpan.innerText = customers.length;
+        if (!customers.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıdan numara yapıştırarak başlayın</small></div>`;
+            return;
+        }
+        container.innerHTML = customers.map(c => {
+            let buttons = "";
+            if (c.status === "beklemede") {
+                buttons = `<div class="button-bar">
+                    <button class="btn-sm btn-success" data-id="${c.id}" data-act="acti"><i class="fas fa-phone-alt"></i> AÇTI</button>
+                    <button class="btn-sm btn-warning" data-id="${c.id}" data-act="acmadi"><i class="fas fa-phone-slash"></i> AÇMADI</button>
+                    <button class="btn-sm btn-danger" data-id="${c.id}" data-act="hatali"><i class="fas fa-exclamation-triangle"></i> HATALI</button>
+                </div>`;
+            }
+            else if (c.status === "acti" && (!c.callResult || ["MEMNUN","MEMNUN_DEĞİL","DÜŞÜNÜCEK","BİR_DAHA_ALICAK","BİR_DAHA_ALMICAK"].indexOf(c.callResult) === -1)) {
+                buttons = `<div class="button-bar">
+                    <button class="btn-sm btn-success" data-id="${c.id}" data-act="sonuc_MEMNUN">😊 MEMNUN</button>
+                    <button class="btn-sm btn-danger" data-id="${c.id}" data-act="sonuc_MEMNUN_DEĞİL">😞 MEMNUN DEĞİL</button>
+                    <button class="btn-sm btn-info" data-id="${c.id}" data-act="sonuc_DÜŞÜNÜCEK">🤔 DÜŞÜNÜCEK</button>
+                    <button class="btn-sm btn-info" data-id="${c.id}" data-act="sonuc_BİR_DAHA_ALICAK">🔄 TEKRAR ALICAK</button>
+                    <button class="btn-sm btn-dark" data-id="${c.id}" data-act="sonuc_BİR_DAHA_ALMICAK">❌ ALMAYACAK</button>
+                </div>`;
+            }
+            else if (c.status === "acmadi" && (!c.callResult || c.callResult !== "GERİ_DÖNDÜ")) {
+                buttons = `<div class="button-bar">
+                    <button class="btn-sm btn-info" data-id="${c.id}" data-act="geri_döndü"><i class="fas fa-undo-alt"></i> GERİ DÖNDÜ</button>
+                    <button class="btn-sm btn-dark" data-id="${c.id}" data-act="geri_dönmedi"><i class="fas fa-times-circle"></i> GERİ DÖNMEDİ</button>
+                </div>`;
+            }
+            else if (c.callResult) {
+                let durumText = "";
+                if (c.callResult === "MEMNUN") durumText = "✅ MEMNUN";
+                else if (c.callResult === "MEMNUN_DEĞİL") durumText = `❌ MEMNUN DEĞİL ${c.complaint ? `(Şikayet: ${c.complaint})` : ''}`;
+                else if (c.callResult === "DÜŞÜNÜCEK") durumText = `🤔 DÜŞÜNÜCEK (${c.thinkDate || ""})`;
+                else if (c.callResult === "BİR_DAHA_ALICAK") durumText = "🔄 TEKRAR ALICAK";
+                else if (c.callResult === "BİR_DAHA_ALMICAK") durumText = "❌ ALMAYACAK";
+                else if (c.callResult === "GERİ_DÖNMEDİ") durumText = "📵 GERİ DÖNMEDİ";
+                else durumText = c.callResult;
+                buttons = `<div class="button-bar"><strong>Sonuç:</strong> ${durumText}</div>`;
+            }
+            return `
+                <div class="record-item">
+                    <div class="record-row">
+                        <div><span class="phone-badge">${c.phone}</span> <span class="name-style">${c.displayName}</span></div>
+                    </div>
+                    ${c.thinkDate ? `<div class="think-date"><i class="far fa-calendar-alt"></i> Düşünme Tarihi: ${c.thinkDate}</div>` : ""}
+                    ${buttons}
+                </div>
+            `;
+        }).join("");
+
+        // Buton olayları
+        document.querySelectorAll("[data-act]").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const id = btn.getAttribute("data-id");
+                const action = btn.getAttribute("data-act");
+                if (action === "sonuc_MEMNUN_DEĞİL") {
+                    const sikayet = prompt("Şikayeti yazınız:");
+                    if (sikayet !== null) updateStatus(id, action, { complaint: sikayet });
+                } else {
+                    updateStatus(id, action);
+                    if (action === "sonuc_DÜŞÜNÜCEK") alert("Düşünecek olarak kaydedildi, tarih işlendi.");
+                }
+            });
+        });
+    }
+
+    // PDF RAPOR
+    document.getElementById("exportPdf").addEventListener("click", () => {
+        if (typeof jspdf === 'undefined') return alert("PDF kütüphanesi yükleniyor, bekleyin...");
+        const { jsPDF } = jspdf;
+        const doc = new jsPDF();
+        const today = new Date().toLocaleDateString("tr-TR");
+        doc.setFontSize(16);
+        doc.text(`${today} İŞ RAPORU`, 20, 20);
+        let y = 35;
+        customers.forEach(c => {
+            let durum = "";
+            if (c.callResult === "MEMNUN") durum = "MEMNUN";
+            else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYETİ: ${c.complaint || "yok"}`;
+            else if (c.callResult === "DÜŞÜNÜCEK") durum = `DÜŞÜNÜCEK (${c.thinkDate})`;
+            else if (c.callResult === "BİR_DAHA_ALICAK") durum = "TEKRAR ALICAK";
+            else if (c.callResult === "BİR_DAHA_ALMICAK") durum = "ALMAYACAK";
+            else if (c.callResult === "GERİ_DÖNMEDİ") durum = "GERİ DÖNMEDİ";
+            else if (c.status === "hatali") durum = "HATALI NUMARA";
+            else durum = "GÖRÜŞME YAPILMADI";
+            doc.setFontSize(10);
+            doc.text(`${c.phone} - ${c.displayName} ; ${durum}`, 20, y);
+            y += 8;
+            if (y > 270) { doc.addPage(); y = 20; }
+        });
+        doc.save(`is_raporu_${today.replace(/\//g, "-")}.pdf`);
+    });
+
+    loadFromLocal();
+</script>
 </body>
 </html>
