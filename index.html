@@ -46,6 +46,16 @@
         .verify-card h2 { color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .verify-card h2 i { color: #3b82f6; }
         .verify-card p { color: #94a3b8; margin-bottom: 25px; font-size: 14px; }
+        .device-info {
+            background: #0a1424;
+            border-radius: 16px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 11px;
+            color: #60a5fa;
+            text-align: center;
+            border: 1px solid #1e3a5f;
+        }
         .question-area {
             background: #0a1424;
             border-radius: 20px;
@@ -497,6 +507,9 @@
     <div class="verify-card">
         <h2><i class="fas fa-shield-alt"></i> Güvenlik Doğrulaması</h2>
         <p>Bu site özeldir. Lütfen doğrulama sorularını cevaplayın.</p>
+        <div id="deviceInfo" class="device-info">
+            <i class="fas fa-desktop"></i> <span id="deviceIdText">Cihaz bilgisi alınıyor...</span>
+        </div>
         <div id="questionContainer"></div>
         <div id="attemptsInfo" class="attempts-left"></div>
         <div id="timerInfo" class="timer-text"></div>
@@ -661,31 +674,53 @@
 </div>
 
 <script>
-    // ========== DOĞRULAMA SİSTEMİ ==========
+    // ========== CİHAZ KİMLİĞİ OLUŞTUR ==========
+    function getDeviceId() {
+        // Tarayıcı ve cihaz bilgilerini al
+        const screenRes = `${screen.width}x${screen.height}`;
+        const userAgent = navigator.userAgent;
+        const language = navigator.language;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        // Basit bir cihaz parmak izi oluştur
+        let deviceFingerprint = `${screenRes}|${language}|${timezone}|${userAgent.substring(0, 100)}`;
+        
+        // Basit hash (cihaz kimliği)
+        let hash = 0;
+        for (let i = 0; i < deviceFingerprint.length; i++) {
+            hash = ((hash << 5) - hash) + deviceFingerprint.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash).toString(16);
+    }
+    
+    const deviceId = getDeviceId();
+    const STORAGE_VERIFY_KEY = `verified_${deviceId}`;
+    const STORAGE_ATTEMPTS_KEY = `attempts_${deviceId}`;
+    const STORAGE_CHANGE_KEY = `changeLeft_${deviceId}`;
+    
+    // DOĞRULAMA SORULARI
     const QUESTIONS = [
         {
             text: "Kaan'ın burcu nedir?",
-            hint: "İpucu: Aslanların kralı, Poyraz ile aynı",
+            hint: "İpucu: Poyraz ile aynı",
             answers: ["aslan", "aslan burcu", "aslan burcudur"]
         },
         {
             text: "Elisa ne zaman doğmuştur?",
-            hint: "İpucu: 24 Haziran / 2017",
             answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"]
         },
         {
             text: "Poyraz ne zaman doğmuştur?",
-            hint: "İpucu: 3 Ağustos / 2009 veya 2010",
             answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"]
         },
         {
             text: "Ali ne zaman doğmuştur?",
-            hint: "İpucu: 18 Aralık 2006",
             answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"]
         },
         {
             text: "Bu siteyi kim yapmıştır?",
-            hint: "İpucu: En sevdiğin yeğenin, ismi K ile başlıyor",
+            hint: "İpucu: En sevdiğin yeğenin.",
             answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"]
         }
     ];
@@ -700,6 +735,16 @@
     // Admin Test Mod Değişkenleri
     let isTestMode = false;
     let testCustomers = [];
+
+    // Cihaz bilgisini göster
+    function showDeviceInfo() {
+        const deviceSpan = document.getElementById("deviceIdText");
+        if (deviceSpan) {
+            // Kısa bir cihaz adı göster
+            const deviceShort = deviceId.substring(0, 8);
+            deviceSpan.innerHTML = `<i class="fas fa-fingerprint"></i> Bu cihaz ID: ${deviceShort}... (Her cihaz ayrı doğrulama ister)`;
+        }
+    }
 
     function loadRandomQuestion() {
         const randomIndex = Math.floor(Math.random() * QUESTIONS.length);
@@ -731,11 +776,15 @@
         const isCorrect = currentQ.answers.some(a => answer === a.toLowerCase());
         
         if (isCorrect) {
-            localStorage.setItem("verified", "true");
+            // Cihaza özel doğrulama başarılı
+            localStorage.setItem(STORAGE_VERIFY_KEY, "true");
             showLoadingAndEnter();
         } else {
             wrongAttempts++;
             updateAttemptsDisplay();
+            // Cihaza özel hata sayacını kaydet
+            localStorage.setItem(STORAGE_ATTEMPTS_KEY, wrongAttempts);
+            
             if (wrongAttempts >= 5) {
                 const warningLocked = document.getElementById("warningLocked");
                 warningLocked.style.display = "block";
@@ -799,12 +848,13 @@
         if (isLocked) { alert("Kilitli durumdayken soru değiştiremezsiniz!"); return; }
         if (questionChangeLeft <= 0) { alert("Soru değiştirme hakkınız kalmadı!"); return; }
         questionChangeLeft--;
+        // Cihaza özel soru değiştirme hakkını kaydet
+        localStorage.setItem(STORAGE_CHANGE_KEY, questionChangeLeft);
         let newIndex = Math.floor(Math.random() * QUESTIONS.length);
         while (newIndex === currentQuestionIndex && QUESTIONS.length > 1) { newIndex = Math.floor(Math.random() * QUESTIONS.length); }
         currentQuestionIndex = newIndex;
         renderQuestion();
         document.getElementById("answerInput").value = "";
-        localStorage.setItem("questionChangeLeft", questionChangeLeft);
     });
     
     // ADMIN TEST MOD ŞİFRE
@@ -820,7 +870,8 @@
             document.getElementById("passwordError").innerHTML = "";
             // Admin test moduna geç
             isTestMode = true;
-            localStorage.setItem("verified", "true");
+            // Admin için ayrı doğrulama geçişi
+            localStorage.setItem(STORAGE_VERIFY_KEY, "true");
             showLoadingAndEnter();
         } else {
             document.getElementById("passwordError").innerHTML = "❌ Hatalı şifre! Tekrar deneyin.";
@@ -859,17 +910,21 @@
     }
     
     function checkVerification() {
-        const verified = localStorage.getItem("verified");
+        showDeviceInfo();
+        // Cihaza özel doğrulama kontrolü
+        const verified = localStorage.getItem(STORAGE_VERIFY_KEY);
+        // Cihaza özel hata ve soru değiştirme verilerini yükle
+        const savedAttempts = localStorage.getItem(STORAGE_ATTEMPTS_KEY);
+        if (savedAttempts !== null) wrongAttempts = parseInt(savedAttempts);
+        const savedChanges = localStorage.getItem(STORAGE_CHANGE_KEY);
+        if (savedChanges !== null) questionChangeLeft = parseInt(savedChanges);
+        
         if (verified === "true") {
             showLoadingAndEnter();
         } else {
             document.getElementById("verifyOverlay").style.display = "flex";
             document.getElementById("mainContent").style.display = "none";
             loadRandomQuestion();
-            const savedChanges = localStorage.getItem("questionChangeLeft");
-            if (savedChanges !== null) questionChangeLeft = parseInt(savedChanges);
-            const savedAttempts = localStorage.getItem("wrongAttempts");
-            if (savedAttempts !== null) wrongAttempts = parseInt(savedAttempts);
             updateAttemptsDisplay();
         }
     }
@@ -897,7 +952,6 @@
     
     document.getElementById("switchModeBtn").addEventListener("click", () => {
         if (isTestMode) {
-            // Test modundan gerçek moda geçiş
             if (confirm("Gerçek moda geçerseniz test verileriniz kaybolacak. Devam etmek istiyor musunuz?")) {
                 isTestMode = false;
                 testCustomers = [];
@@ -905,7 +959,6 @@
                 updateModeUI();
             }
         } else {
-            // Gerçek moddan test moduna geçiş
             if (confirm("Test moduna geçerseniz yaptığınız işlemler GERÇEK VERİYE İŞLENMEYECEK. Devam etmek istiyor musunuz?")) {
                 isTestMode = true;
                 testCustomers = [];
@@ -964,7 +1017,6 @@
         let duplicate = 0;
         let invalid = 0;
         
-        // Hangi veriyi kullanacağımızı seç
         const targetList = isTestMode ? testCustomers : customers;
         
         for (const line of lines) {
