@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Aysun Hanım - Spor Salonu Takip</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="theme-color" content="#1e2f41">
+</head>
+<body>
+    <div class="app-container">
+        <div class="welcome-header">
+            <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım...</h1>
+            <p class="subtitle">Numara takip & Müşteri yönetimi | Mobil Destekli</p>
+        </div>
+
+        <div class="info-card">
+            <i class="fas fa-info-circle"></i> 
+            <strong>📌 BİLGİ KISMI:</strong> 
+            <ul>
+                <li>🔹 <strong>Numara + İsim ekle:</strong> Altaki kutuya <u>numara ve isim</u> yapıştır (örnek: 5551234567 Nurten Hanım)</li>
+                <li>🔹 Kayıtlar <strong>otomatik hatırlanır</strong>, bir daha yazmaya gerek yok</li>
+                <li>🔹 Her satırda: AÇTI / AÇMADI / HATALI butonları</li>
+                <li>🔹 "AÇTI" ise memnuniyet, "AÇMADI" ise geri dönüş butonları</li>
+                <li>🔹 <strong>Telefon ara:</strong> Arama kutusuna ilk/son haneleri yazın, "Nurten Hanım arıyor" gösterir</li>
+                <li>🔹 <strong>İŞ BİTTİ</strong> butonu PDF rapor oluşturur</li>
+            </ul>
+        </div>
+
+        <div class="add-card">
+            <div class="input-group">
+                <input type="text" id="rawDataInput" placeholder="📞 5321234567 Nurten Hanım" class="premium-input">
+                <button id="addBtn" class="btn-primary"><i class="fas fa-plus-circle"></i> Ekle</button>
+            </div>
+            <small><i class="fas fa-database"></i> Eklediğiniz kayıtlar otomatik kaydedilir</small>
+        </div>
+
+        <div class="search-card">
+            <div class="input-group">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchPhone" placeholder="Telefonun ilk veya son haneleri... (örn: 532)" class="premium-input">
+            </div>
+            <div id="searchResult" class="search-result-box">🔍 Telefon yazın, eşleşen müşteri görünecek</div>
+        </div>
+
+        <div class="records-header">
+            <h3><i class="fas fa-list-ul"></i> Müşteri Listesi</h3>
+            <button id="exportPdfBtn" class="btn-success"><i class="fas fa-file-pdf"></i> 📄 İŞ BİTTİ (PDF)</button>
+        </div>
+
+        <div id="recordsList" class="records-container">
+            <div class="record-card" style="text-align:center;">Yukarıdan numara ekleyin</div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
