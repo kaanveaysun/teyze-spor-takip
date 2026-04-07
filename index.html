@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Tesseract.js for OCR (görselden metin okuma) -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +16,6 @@
             min-height: 100vh;
         }
         
-        /* DOĞRULAMA EKRANI */
         .verify-overlay {
             position: fixed;
             top: 0;
@@ -111,8 +109,6 @@
             width: 100%;
         }
         .warning-locked { text-align: center; color: #ef4444; font-size: 14px; margin-top: 15px; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 16px; }
-        
-        /* ADMIN TEST MOD BUTONU */
         .admin-test-btn {
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             border: none;
@@ -131,7 +127,6 @@
         }
         .admin-test-btn:hover { transform: scale(0.98); }
         
-        /* ŞİFRE MODAL */
         .password-modal {
             position: fixed;
             top: 0;
@@ -174,7 +169,6 @@
         .btn-admin { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
         .error-msg { color: #ef4444; font-size: 12px; margin-top: 10px; text-align: center; }
         
-        /* LOADING EKRANI */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -206,7 +200,6 @@
         .loading-step { background: #1e293b; padding: 8px 16px; border-radius: 40px; font-size: 12px; color: #94a3b8; }
         .loading-step.active { background: #3b82f6; color: white; }
         
-        /* ANA İÇERİK */
         .main-content { display: none; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
         .header {
@@ -270,8 +263,6 @@
             align-items: center;
             gap: 10px;
         }
-        
-        /* GÖRSEL ALGILAMA ALANI */
         .image-upload-area {
             border: 2px dashed #3b82f6;
             border-radius: 20px;
@@ -281,53 +272,14 @@
             transition: 0.3s;
             margin-bottom: 15px;
         }
-        .image-upload-area:hover {
-            background: rgba(59,130,246,0.1);
-            border-color: #60a5fa;
-        }
-        .image-upload-area i {
-            font-size: 48px;
-            color: #3b82f6;
-            margin-bottom: 15px;
-        }
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 16px;
-            margin-top: 15px;
-            display: none;
-        }
-        .ocr-progress {
-            background: #0a1424;
-            border-radius: 40px;
-            height: 8px;
-            margin-top: 15px;
-            display: none;
-        }
-        .ocr-progress-bar {
-            background: #3b82f6;
-            height: 100%;
-            border-radius: 40px;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        .detected-text {
-            background: #0a1424;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 12px;
-            color: #60a5fa;
-            max-height: 150px;
-            overflow-y: auto;
-            display: none;
-        }
+        .image-upload-area:hover { background: rgba(59,130,246,0.1); border-color: #60a5fa; }
+        .image-upload-area i { font-size: 48px; color: #3b82f6; margin-bottom: 15px; }
+        .image-preview { max-width: 100%; max-height: 200px; border-radius: 16px; margin-top: 15px; display: none; }
+        .ocr-progress { background: #0a1424; border-radius: 40px; height: 8px; margin-top: 15px; display: none; }
+        .ocr-progress-bar { background: #3b82f6; height: 100%; border-radius: 40px; width: 0%; transition: width 0.3s; }
+        .detected-text { background: #0a1424; border-radius: 16px; padding: 12px; margin-top: 15px; font-size: 12px; color: #60a5fa; max-height: 150px; overflow-y: auto; display: none; }
         
-        .input-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .input-group { display: flex; gap: 12px; flex-wrap: wrap; }
         .input-group textarea {
             flex: 1;
             background: #0a1424;
@@ -340,11 +292,7 @@
             resize: vertical;
             min-height: 120px;
         }
-        .input-group textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
+        .input-group textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         .input-group textarea::placeholder { color: #4a5568; font-family: 'Inter', sans-serif; }
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -439,7 +387,6 @@
         .empty-state { text-align: center; padding: 50px; color: #4a5568; }
         .empty-state i { font-size: 50px; margin-bottom: 15px; }
         
-        /* BİLGİ KUTUSU */
         .info-card {
             background: linear-gradient(135deg, #0f1a2f, #0a1424);
             border-radius: 24px;
@@ -466,7 +413,6 @@
         .step-content { flex: 1; }
         .step-title { color: white; font-weight: 600; margin-bottom: 5px; }
         .step-desc { color: #94a3b8; font-size: 13px; line-height: 1.5; }
-        .step-desc i { color: #3b82f6; margin-right: 5px; }
         .example-box {
             background: #0a1424;
             border-radius: 16px;
@@ -477,14 +423,7 @@
             color: #60a5fa;
             border-left: 3px solid #3b82f6;
         }
-        .batch-result {
-            margin-top: 12px;
-            padding: 10px;
-            background: #0a1424;
-            border-radius: 16px;
-            font-size: 12px;
-            color: #60a5fa;
-        }
+        .batch-result { margin-top: 12px; padding: 10px; background: #0a1424; border-radius: 16px; font-size: 12px; color: #60a5fa; }
         @media (max-width: 700px) {
             .main-content { padding: 12px; }
             .header h1 { font-size: 22px; }
@@ -499,13 +438,12 @@
 </head>
 <body>
 
-<!-- DOĞRULAMA EKRANI -->
 <div id="verifyOverlay" class="verify-overlay">
     <div class="verify-card">
         <h2><i class="fas fa-shield-alt"></i> Güvenlik Doğrulaması</h2>
         <p>Bu site özeldir. Lütfen doğrulama sorularını cevaplayın.</p>
         <div id="deviceInfo" class="device-info">
-            <i class="fas fa-desktop"></i> <span id="deviceIdText">Cihaz bilgisi alınıyor...</span>
+            <i class="fas fa-desktop"></i> <span id="deviceIdText">Bu cihaz doğrulama istiyor</span>
         </div>
         <div id="questionContainer"></div>
         <div id="attemptsInfo" class="attempts-left"></div>
@@ -516,7 +454,6 @@
     </div>
 </div>
 
-<!-- ŞİFRE MODAL -->
 <div id="passwordModal" class="password-modal">
     <div class="password-card">
         <h3><i class="fas fa-key"></i> Admin Test Modu</h3>
@@ -528,7 +465,6 @@
     </div>
 </div>
 
-<!-- LOADING EKRANI -->
 <div id="loadingOverlay" class="loading-overlay" style="display:none;">
     <div class="loading-content">
         <h2><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h2>
@@ -546,7 +482,6 @@
     </div>
 </div>
 
-<!-- ANA İÇERİK -->
 <div id="mainContent" class="main-content">
 <div class="container">
     <div class="header">
@@ -559,7 +494,6 @@
         </div>
     </div>
 
-    <!-- BİLGİ KUTUSU -->
     <div class="info-card">
         <div class="info-header" id="infoHeader">
             <span><i class="fas fa-info-circle"></i> 📌 SİTE NASIL KULLANILIR?</span>
@@ -567,49 +501,15 @@
         </div>
         <div class="info-body" id="infoBody">
             <div class="step-container">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <div class="step-title">📸 Görsel Yükle (Ekran Görüntüsü veya Fotoğraf)</div>
-                        <div class="step-desc">WhatsApp/Instagram'daki listeyi ekran görüntüsü olarak alın ve yükleyin. <strong>Google Lens benzeri teknoloji</strong> ile otomatik okur.</div>
-                        <div class="example-box">
-                            <i class="fas fa-image"></i> Ekran görüntüsü yükleyin, numaralar ve isimler otomatik algılanır!
-                        </div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <div class="step-title">📋 Veya Doğrudan Yapıştır</div>
-                        <div class="step-desc">Listeyi kopyala yapıştır yapabilirsiniz.</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <div class="step-title">🚀 "Toplu Ekle" Butonuna Bas</div>
-                        <div class="step-desc">Sistem otomatik olarak her satırdaki numarayı ve ismi algılar.</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <div class="step-title">📞 Müşterilerle Görüşme</div>
-                        <div class="step-desc">AÇTI / AÇMADI / HATALI butonlarını kullanın.</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">5</div>
-                    <div class="step-content">
-                        <div class="step-title">📄 İş Bittiğinde PDF Rapor Al</div>
-                        <div class="step-desc">"İŞ BİTTİ - PDF RAPOR" butonuna basın.</div>
-                    </div>
-                </div>
+                <div class="step-item"><div class="step-number">1</div><div class="step-content"><div class="step-title">📸 Görsel Yükle</div><div class="step-desc">Ekran görüntüsünü yükleyin, otomatik okur.</div></div></div>
+                <div class="step-item"><div class="step-number">2</div><div class="step-content"><div class="step-title">📋 Veya Yapıştır</div><div class="step-desc">Listeyi kopyala yapıştır yapın.</div></div></div>
+                <div class="step-item"><div class="step-number">3</div><div class="step-content"><div class="step-title">🚀 Toplu Ekle</div><div class="step-desc">Numara ve isimler otomatik algılanır.</div></div></div>
+                <div class="step-item"><div class="step-number">4</div><div class="step-content"><div class="step-title">📞 Görüşme Butonları</div><div class="step-desc">AÇTI / AÇMADI / HATALI</div></div></div>
+                <div class="step-item"><div class="step-number">5</div><div class="step-content"><div class="step-title">📄 PDF Rapor</div><div class="step-desc">İş bitince PDF alın.</div></div></div>
             </div>
         </div>
     </div>
 
-    <!-- GÖRSEL ALGILAMA KARTI -->
     <div class="card">
         <div class="card-title"><i class="fas fa-camera"></i> 📸 Görsel Algılama (Ekran Görüntüsü Yükle)</div>
         <div id="imageUploadArea" class="image-upload-area">
@@ -632,9 +532,7 @@
             <textarea id="rawInput" placeholder="📋 Örnek format (her satıra bir kişi):&#10;5321234567 Nurten Hanım&#10;5559876543 Kerem Bey&#10;5331112233 Deniz&#10;5445556677"></textarea>
             <button class="btn-primary" id="addBtn"><i class="fas fa-layer-group"></i> Toplu Ekle</button>
         </div>
-        <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">
-            💡 Her satırda: "NUMARA İSİM" veya sadece "NUMARA". İsim otomatik Hanım/Bey eklenir.
-        </div>
+        <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">💡 Her satırda: "NUMARA İSİM" veya sadece "NUMARA".</div>
         <div id="batchResult" class="batch-result" style="display:none;"></div>
     </div>
 
@@ -643,9 +541,7 @@
         <div class="input-group">
             <input type="text" id="searchInput" placeholder="📱 Telefonun ilk veya son hanelerini yaz (örn: 532 veya 4567)">
         </div>
-        <div class="search-result" id="searchResultArea">
-            <i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek
-        </div>
+        <div class="search-result" id="searchResultArea"><i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek</div>
     </div>
 
     <div class="list-header">
@@ -660,19 +556,21 @@
 </div>
 
 <script>
-    // ========== CİHAZ KİMLİĞİ OLUŞTUR ==========
+    // CİHAZ KİMLİĞİ
     function getDeviceId() {
-        const screenRes = `${screen.width}x${screen.height}`;
-        const userAgent = navigator.userAgent;
-        const language = navigator.language;
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let deviceFingerprint = `${screenRes}|${language}|${timezone}|${userAgent.substring(0, 100)}`;
-        let hash = 0;
-        for (let i = 0; i < deviceFingerprint.length; i++) {
-            hash = ((hash << 5) - hash) + deviceFingerprint.charCodeAt(i);
-            hash |= 0;
-        }
-        return Math.abs(hash).toString(16);
+        try {
+            const screenRes = `${screen.width}x${screen.height}`;
+            const userAgent = navigator.userAgent;
+            const language = navigator.language;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            let str = `${screenRes}|${language}|${timezone}|${userAgent.substring(0, 80)}`;
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16);
+        } catch(e) { return "default"; }
     }
     
     const deviceId = getDeviceId();
@@ -680,13 +578,13 @@
     const STORAGE_ATTEMPTS_KEY = `attempts_${deviceId}`;
     const STORAGE_CHANGE_KEY = `changeLeft_${deviceId}`;
     
-    // DOĞRULAMA SORULARI
+    // SORULAR - İPUÇLARI SADECE İPUCU, CEVAP DEĞİL!
     const QUESTIONS = [
         { text: "Kaan'ın burcu nedir?", hint: "İpucu: Poyraz ile aynı", answers: ["aslan", "aslan burcu", "aslan burcudur"] },
-        { text: "Elisa ne zaman doğmuştur?", hint: ", answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"] },
-        { text: "Poyraz ne zaman doğmuştur?", hint: , answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"] },
-        { text: "Ali ne zaman doğmuştur?", hint: , answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"] },
-        { text: "Bu siteyi kim yapmıştır?", hint: "İpucu: En sevdiğin yeğenin. ", answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"] }
+        { text: "Elisa ne zaman doğmuştur?", hint: "İpucu:", answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"] },
+        { text: "Poyraz ne zaman doğmuştur?", hint: "İpucu:", answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"] },
+        { text: "Ali ne zaman doğmuştur?", hint: "İpucu:", answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"] },
+        { text: "Bu siteyi kim yapmıştır?", hint: "İpucu: En sevdiğin yiğenin", answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"] }
     ];
 
     let currentQuestionIndex = 0;
@@ -695,7 +593,6 @@
     let lockUntil = 0;
     let questionChangeLeft = 5;
     let timerInterval = null;
-    
     let isTestMode = false;
     let testCustomers = [];
     let detectedRawText = "";
@@ -713,7 +610,6 @@
     imageUploadArea.addEventListener("dragover", (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "#60a5fa"; });
     imageUploadArea.addEventListener("dragleave", () => imageUploadArea.style.borderColor = "#3b82f6");
     imageUploadArea.addEventListener("drop", (e) => { e.preventDefault(); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith("image/")) processImage(file); });
-
     imageInput.addEventListener("change", (e) => { if (e.target.files[0]) processImage(e.target.files[0]); });
 
     async function processImage(file) {
@@ -726,27 +622,28 @@
             detectedTextDiv.style.display = "none";
             applyDetectedBtn.style.display = "none";
             
-            // Tesseract ile OCR işlemi
-            const worker = await Tesseract.createWorker('tur');
-            await worker.loadLanguage('tur+eng');
-            await worker.initialize('tur+eng');
-            
-            let progress = 0;
-            worker.setProgress((p) => {
-                progress = p.progress * 100;
-                ocrProgressBar.style.width = `${progress}%`;
-            });
-            
-            const { data: { text } } = await worker.recognize(e.target.result);
-            await worker.terminate();
-            
-            ocrProgressBar.style.width = "100%";
-            setTimeout(() => { ocrProgress.style.display = "none"; }, 1000);
-            
-            detectedRawText = text;
-            detectedTextDiv.innerHTML = `<i class="fas fa-font"></i> Algılanan Metin:<br><pre style="font-family:monospace; font-size:11px; margin-top:8px;">${escapeHtml(text.substring(0, 1000))}</pre>`;
-            detectedTextDiv.style.display = "block";
-            applyDetectedBtn.style.display = "block";
+            try {
+                const worker = await Tesseract.createWorker('tur');
+                await worker.loadLanguage('tur+eng');
+                await worker.initialize('tur+eng');
+                let progress = 0;
+                worker.setProgress((p) => {
+                    progress = p.progress * 100;
+                    ocrProgressBar.style.width = `${progress}%`;
+                });
+                const { data: { text } } = await worker.recognize(e.target.result);
+                await worker.terminate();
+                ocrProgressBar.style.width = "100%";
+                setTimeout(() => { ocrProgress.style.display = "none"; }, 1000);
+                detectedRawText = text;
+                detectedTextDiv.innerHTML = `<i class="fas fa-font"></i> Algılanan Metin:<br><pre style="font-family:monospace; font-size:11px; margin-top:8px; white-space:pre-wrap;">${escapeHtml(text.substring(0, 1000))}</pre>`;
+                detectedTextDiv.style.display = "block";
+                applyDetectedBtn.style.display = "block";
+            } catch(err) {
+                ocrProgress.style.display = "none";
+                detectedTextDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Görsel okunamadı, lütfen tekrar deneyin veya manuel yapıştırın.`;
+                detectedTextDiv.style.display = "block";
+            }
         };
         reader.readAsDataURL(file);
     }
@@ -763,14 +660,6 @@
             alert("✅ Algılanan metin yapıştırma alanına aktarıldı! Şimdi 'Toplu Ekle' butonuna basabilirsiniz.");
         }
     });
-
-    function showDeviceInfo() {
-        const deviceSpan = document.getElementById("deviceIdText");
-        if (deviceSpan) {
-            const deviceShort = deviceId.substring(0, 8);
-            deviceSpan.innerHTML = `<i class="fas fa-fingerprint"></i> Bu cihaz ID: ${deviceShort}... (Her cihaz ayrı doğrulama ister)`;
-        }
-    }
 
     function loadRandomQuestion() {
         const randomIndex = Math.floor(Math.random() * QUESTIONS.length);
@@ -810,9 +699,8 @@
             localStorage.setItem(STORAGE_ATTEMPTS_KEY, wrongAttempts);
             
             if (wrongAttempts >= 5) {
-                const warningLocked = document.getElementById("warningLocked");
-                warningLocked.style.display = "block";
-                warningLocked.innerHTML = "<i class='fas fa-ban'></i> Başka birisi tarafından giriş algılandı. Bu siteyi kullanamazsın!";
+                document.getElementById("warningLocked").style.display = "block";
+                document.getElementById("warningLocked").innerHTML = "<i class='fas fa-ban'></i> Başka birisi tarafından giriş algılandı. Bu siteyi kullanamazsın!";
                 isLocked = true;
                 document.getElementById("submitAnswer").disabled = true;
                 document.getElementById("answerInput").disabled = true;
@@ -930,7 +818,6 @@
     }
     
     function checkVerification() {
-        showDeviceInfo();
         const verified = localStorage.getItem(STORAGE_VERIFY_KEY);
         const savedAttempts = localStorage.getItem(STORAGE_ATTEMPTS_KEY);
         if (savedAttempts !== null) wrongAttempts = parseInt(savedAttempts);
@@ -947,7 +834,7 @@
         }
     }
     
-    // ========== ANA UYGULAMA ==========
+    // ANA UYGULAMA
     const STORAGE_KEY = "teyze_full_crm";
     let customers = [];
 
@@ -994,11 +881,7 @@
 
     function loadMainApp() {
         document.getElementById("todayDate").innerText = new Date().toLocaleDateString("tr-TR", { year: 'numeric', month: 'long', day: 'numeric' });
-        if (!isTestMode) {
-            loadFromLocal();
-        } else {
-            renderList();
-        }
+        if (!isTestMode) { loadFromLocal(); } else { renderList(); }
         attachMainEvents();
         updateModeUI();
     }
@@ -1006,8 +889,8 @@
     function formatNameWithTitle(rawName) {
         if (!rawName || rawName.trim() === "") return "İsimsiz Müşteri";
         const name = rawName.trim();
-        const kadin = ["nurten", "fatma", "ayşe", "emine", "zeynep", "hatice", "gül", "sibel", "merve", "sultan", "canan", "gülnur", "aysun", "sevgi", "filiz", "selin", "pınar", "dilara", "ece", "ipek"];
-        const erkek = ["kerem", "ahmet", "mehmet", "mustafa", "ali", "veli", "can", "burak", "emre", "kaan", "hakan", "murat", "serkan", "volkan", "erdem", "berk", "tolga", "kaan emre"];
+        const kadin = ["nurten", "fatma", "ayşe", "emine", "zeynep", "hatice", "gül", "sibel", "merve", "sultan", "canan", "gülnur", "aysun", "sevgi", "filiz"];
+        const erkek = ["kerem", "ahmet", "mehmet", "mustafa", "ali", "veli", "can", "burak", "emre", "kaan", "hakan", "murat", "serkan"];
         const lower = name.toLowerCase();
         if (kadin.includes(lower)) return name + " Hanım";
         if (erkek.includes(lower)) return name + " Bey";
@@ -1029,64 +912,28 @@
 
     function addBatchCustomers(rawText) {
         const lines = rawText.split(/\r?\n/);
-        let added = 0;
-        let duplicate = 0;
-        let invalid = 0;
-        
+        let added = 0, duplicate = 0, invalid = 0;
         const targetList = isTestMode ? testCustomers : customers;
         
         for (const line of lines) {
             if (line.trim() === "") continue;
             let { phone, name } = parsePhoneAndNameFromLine(line);
-            if (!phone || phone.length < 5) {
-                invalid++;
-                continue;
-            }
-            if (targetList.find(c => c.phone === phone)) {
-                duplicate++;
-                continue;
-            }
+            if (!phone || phone.length < 5) { invalid++; continue; }
+            if (targetList.find(c => c.phone === phone)) { duplicate++; continue; }
             const displayName = formatNameWithTitle(name);
-            const newCust = {
-                id: Date.now() + "_" + Math.random() + "_" + phone,
-                phone: phone,
-                rawName: name,
-                displayName: displayName,
-                status: "beklemede",
-                callResult: null,
-                complaint: "",
-                thinkDate: null,
-                createdAt: new Date().toISOString()
-            };
-            targetList.push(newCust);
+            targetList.push({ id: Date.now() + "_" + Math.random() + "_" + phone, phone, rawName: name, displayName, status: "beklemede", callResult: null, complaint: "", thinkDate: null, createdAt: new Date().toISOString() });
             added++;
         }
-        
-        if (!isTestMode) {
-            saveToLocal();
-        } else {
-            renderList();
-        }
-        
+        if (!isTestMode) saveToLocal(); else renderList();
         const batchDiv = document.getElementById("batchResult");
         batchDiv.style.display = "block";
-        const modText = isTestMode ? " (TEST MODU - Veri işlenmedi)" : "";
-        batchDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ${added} kişi eklendi${modText}, ${duplicate} kişi zaten vardı, ${invalid} geçersiz satır atlandı.`;
+        batchDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ${added} kişi eklendi, ${duplicate} vardı, ${invalid} geçersiz.`;
         setTimeout(() => { batchDiv.style.display = "none"; }, 4000);
-        
-        if (added > 0) alert(`✅ ${added} müşteri başarıyla eklendi!${isTestMode ? " (TEST MODU)" : ""}`);
+        if (added > 0) alert(`✅ ${added} müşteri eklendi!${isTestMode ? " (TEST MODU)" : ""}`);
     }
 
-    function saveToLocal() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
-        renderList();
-    }
-
-    function loadFromLocal() {
-        const data = localStorage.getItem(STORAGE_KEY);
-        customers = data ? JSON.parse(data) : [];
-        renderList();
-    }
+    function saveToLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(customers)); renderList(); }
+    function loadFromLocal() { const data = localStorage.getItem(STORAGE_KEY); customers = data ? JSON.parse(data) : []; renderList(); }
 
     function attachMainEvents() {
         document.getElementById("addBtn").onclick = () => {
@@ -1095,44 +942,32 @@
             addBatchCustomers(raw);
             document.getElementById("rawInput").value = "";
         };
-
         document.getElementById("searchInput").oninput = (e) => {
             const q = e.target.value.trim();
             const resultDiv = document.getElementById("searchResultArea");
             const targetList = isTestMode ? testCustomers : customers;
-            if (!q) {
-                resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın, eşleşen müşteri burada görünecek';
-                return;
-            }
+            if (!q) { resultDiv.innerHTML = '<i class="fas fa-info-circle"></i> Telefon yazın...'; return; }
             const found = targetList.find(c => c.phone.startsWith(q) || c.phone.endsWith(q));
-            if (found) {
-                resultDiv.innerHTML = `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})`;
-            } else {
-                resultDiv.innerHTML = `<i class="fas fa-user-slash"></i> ❌ Bu kişinin ismine ulaşılamadı ya da yok (${q})`;
-            }
+            resultDiv.innerHTML = found ? `<i class="fas fa-phone-ring"></i> 📞 ${found.displayName} arıyor (${found.phone})` : `<i class="fas fa-user-slash"></i> ❌ Bulunamadı (${q})`;
         };
-
         document.getElementById("exportPdf").onclick = () => {
-            if (typeof jspdf === 'undefined') return alert("PDF kütüphanesi yükleniyor, bekleyin...");
+            if (typeof jspdf === 'undefined') return alert("PDF yükleniyor...");
             const { jsPDF } = jspdf;
             const doc = new jsPDF();
             const today = new Date().toLocaleDateString("tr-TR");
-            doc.setFontSize(16);
             const targetList = isTestMode ? testCustomers : customers;
-            const modText = isTestMode ? " (TEST MODU - GERÇEK VERİ DEĞİL)" : "";
-            doc.text(`${today} İŞ RAPORU${modText}`, 20, 20);
+            doc.text(`${today} İŞ RAPORU${isTestMode ? " (TEST)" : ""}`, 20, 20);
             let y = 35;
             targetList.forEach(c => {
                 let durum = "";
                 if (c.callResult === "MEMNUN") durum = "MEMNUN";
-                else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYETİ: ${c.complaint || "yok"}`;
+                else if (c.callResult === "MEMNUN_DEĞİL") durum = `MEMNUN DEĞİL, ŞİKAYET: ${c.complaint || "yok"}`;
                 else if (c.callResult === "DÜŞÜNÜCEK") durum = `DÜŞÜNÜCEK (${c.thinkDate})`;
                 else if (c.callResult === "BİR_DAHA_ALICAK") durum = "TEKRAR ALICAK";
                 else if (c.callResult === "BİR_DAHA_ALMICAK") durum = "ALMAYACAK";
                 else if (c.callResult === "GERİ_DÖNMEDİ") durum = "GERİ DÖNMEDİ";
                 else if (c.status === "hatali") durum = "HATALI NUMARA";
                 else durum = "GÖRÜŞME YAPILMADI";
-                doc.setFontSize(10);
                 doc.text(`${c.phone} - ${c.displayName} ; ${durum}`, 20, y);
                 y += 8;
                 if (y > 270) { doc.addPage(); y = 20; }
@@ -1156,22 +991,19 @@
             c.callResult = val;
             if (val === "DÜŞÜNÜCEK") c.thinkDate = new Date().toLocaleString("tr-TR");
             if (val === "MEMNUN_DEĞİL" && extra.complaint !== undefined) c.complaint = extra.complaint;
-            if (!isTestMode) saveToLocal();
-            else renderList();
+            if (!isTestMode) saveToLocal(); else renderList();
             return;
         }
-        if (!isTestMode) saveToLocal();
-        else renderList();
+        if (!isTestMode) saveToLocal(); else renderList();
     }
 
     function renderList() {
         const container = document.getElementById("recordsList");
         const countSpan = document.getElementById("customerCount");
-        if (!container) return;
         const targetList = isTestMode ? testCustomers : customers;
         countSpan.innerText = targetList.length;
         if (!targetList.length) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın veya görsel yükleyin</small></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p></div>`;
             return;
         }
         container.innerHTML = targetList.map(c => {
@@ -1182,8 +1014,7 @@
                     <button class="btn-sm btn-warning" data-id="${c.id}" data-act="acmadi"><i class="fas fa-phone-slash"></i> AÇMADI</button>
                     <button class="btn-sm btn-danger" data-id="${c.id}" data-act="hatali"><i class="fas fa-exclamation-triangle"></i> HATALI</button>
                 </div>`;
-            }
-            else if (c.status === "acti" && (!c.callResult || ["MEMNUN","MEMNUN_DEĞİL","DÜŞÜNÜCEK","BİR_DAHA_ALICAK","BİR_DAHA_ALMICAK"].indexOf(c.callResult) === -1)) {
+            } else if (c.status === "acti" && (!c.callResult || ["MEMNUN","MEMNUN_DEĞİL","DÜŞÜNÜCEK","BİR_DAHA_ALICAK","BİR_DAHA_ALMICAK"].indexOf(c.callResult) === -1)) {
                 buttons = `<div class="button-bar">
                     <button class="btn-sm btn-success" data-id="${c.id}" data-act="sonuc_MEMNUN">😊 MEMNUN</button>
                     <button class="btn-sm btn-danger" data-id="${c.id}" data-act="sonuc_MEMNUN_DEĞİL">😞 MEMNUN DEĞİL</button>
@@ -1191,14 +1022,12 @@
                     <button class="btn-sm btn-info" data-id="${c.id}" data-act="sonuc_BİR_DAHA_ALICAK">🔄 TEKRAR ALICAK</button>
                     <button class="btn-sm btn-dark" data-id="${c.id}" data-act="sonuc_BİR_DAHA_ALMICAK">❌ ALMAYACAK</button>
                 </div>`;
-            }
-            else if (c.status === "acmadi" && (!c.callResult || c.callResult !== "GERİ_DÖNDÜ")) {
+            } else if (c.status === "acmadi" && (!c.callResult || c.callResult !== "GERİ_DÖNDÜ")) {
                 buttons = `<div class="button-bar">
                     <button class="btn-sm btn-info" data-id="${c.id}" data-act="geri_döndü"><i class="fas fa-undo-alt"></i> GERİ DÖNDÜ</button>
                     <button class="btn-sm btn-dark" data-id="${c.id}" data-act="geri_dönmedi"><i class="fas fa-times-circle"></i> GERİ DÖNMEDİ</button>
                 </div>`;
-            }
-            else if (c.callResult) {
+            } else if (c.callResult) {
                 let durumText = "";
                 if (c.callResult === "MEMNUN") durumText = "✅ MEMNUN";
                 else if (c.callResult === "MEMNUN_DEĞİL") durumText = `❌ MEMNUN DEĞİL ${c.complaint ? `(Şikayet: ${c.complaint})` : ''}`;
@@ -1209,17 +1038,8 @@
                 else durumText = c.callResult;
                 buttons = `<div class="button-bar"><strong>Sonuç:</strong> ${durumText}</div>`;
             }
-            return `
-                <div class="record-item">
-                    <div class="record-row">
-                        <div><span class="phone-badge">${c.phone}</span> <span class="name-style">${c.displayName}</span></div>
-                    </div>
-                    ${c.thinkDate ? `<div class="think-date"><i class="far fa-calendar-alt"></i> Düşünme Tarihi: ${c.thinkDate}</div>` : ""}
-                    ${buttons}
-                </div>
-            `;
+            return `<div class="record-item"><div class="record-row"><div><span class="phone-badge">${c.phone}</span> <span class="name-style">${c.displayName}</span></div></div>${c.thinkDate ? `<div class="think-date"><i class="far fa-calendar-alt"></i> Düşünme: ${c.thinkDate}</div>` : ""}${buttons}</div>`;
         }).join("");
-
         document.querySelectorAll("[data-act]").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const id = btn.getAttribute("data-id");
@@ -1227,10 +1047,7 @@
                 if (action === "sonuc_MEMNUN_DEĞİL") {
                     const sikayet = prompt("Şikayeti yazınız:");
                     if (sikayet !== null) updateStatus(id, action, { complaint: sikayet });
-                } else {
-                    updateStatus(id, action);
-                    if (action === "sonuc_DÜŞÜNÜCEK") alert("Düşünecek olarak kaydedildi, tarih işlendi.");
-                }
+                } else { updateStatus(id, action); if (action === "sonuc_DÜŞÜNÜCEK") alert("Düşünecek olarak kaydedildi."); }
             });
         });
     }
