@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Tesseract.js for OCR (görselden metin okuma) -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -127,9 +129,7 @@
             justify-content: center;
             gap: 8px;
         }
-        .admin-test-btn:hover {
-            transform: scale(0.98);
-        }
+        .admin-test-btn:hover { transform: scale(0.98); }
         
         /* ŞİFRE MODAL */
         .password-modal {
@@ -152,13 +152,7 @@
             width: 90%;
             border: 1px solid #8b5cf6;
         }
-        .password-card h3 {
-            color: white;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .password-card h3 { color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .password-card input {
             width: 100%;
             background: #0a1424;
@@ -177,16 +171,8 @@
             font-weight: 600;
             cursor: pointer;
         }
-        .btn-admin {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-        }
-        .error-msg {
-            color: #ef4444;
-            font-size: 12px;
-            margin-top: 10px;
-            text-align: center;
-        }
+        .btn-admin { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .error-msg { color: #ef4444; font-size: 12px; margin-top: 10px; text-align: center; }
         
         /* LOADING EKRANI */
         .loading-overlay {
@@ -254,12 +240,8 @@
             font-weight: 600;
             color: white;
         }
-        .mode-badge.test-mode {
-            background: #8b5cf6;
-        }
-        .mode-badge.real-mode {
-            background: #10b981;
-        }
+        .mode-badge.test-mode { background: #8b5cf6; }
+        .mode-badge.real-mode { background: #10b981; }
         .switch-mode-btn {
             background: #334155;
             border: none;
@@ -288,6 +270,59 @@
             align-items: center;
             gap: 10px;
         }
+        
+        /* GÖRSEL ALGILAMA ALANI */
+        .image-upload-area {
+            border: 2px dashed #3b82f6;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+        .image-upload-area:hover {
+            background: rgba(59,130,246,0.1);
+            border-color: #60a5fa;
+        }
+        .image-upload-area i {
+            font-size: 48px;
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 16px;
+            margin-top: 15px;
+            display: none;
+        }
+        .ocr-progress {
+            background: #0a1424;
+            border-radius: 40px;
+            height: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        .ocr-progress-bar {
+            background: #3b82f6;
+            height: 100%;
+            border-radius: 40px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .detected-text {
+            background: #0a1424;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #60a5fa;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+        
         .input-group {
             display: flex;
             gap: 12px;
@@ -303,7 +338,7 @@
             font-size: 15px;
             font-family: 'Inter', monospace;
             resize: vertical;
-            min-height: 150px;
+            min-height: 120px;
         }
         .input-group textarea:focus {
             outline: none;
@@ -323,6 +358,18 @@
             align-items: center;
             gap: 8px;
             height: fit-content;
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .btn-pdf {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
@@ -409,67 +456,17 @@
             justify-content: space-between;
             user-select: none;
         }
-        .info-header span {
-            color: #60a5fa;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .info-header i {
-            color: #60a5fa;
-            transition: transform 0.3s;
-        }
-        .info-body {
-            padding: 20px 25px;
-            display: none;
-            border-top: 1px solid #1e3a5f;
-        }
-        .info-body.show {
-            display: block;
-        }
-        .step-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .step-item {
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-            background: #0a1424;
-            padding: 15px;
-            border-radius: 20px;
-        }
-        .step-number {
-            background: #3b82f6;
-            width: 32px;
-            height: 32px;
-            border-radius: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            flex-shrink: 0;
-        }
-        .step-content {
-            flex: 1;
-        }
-        .step-title {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .step-desc {
-            color: #94a3b8;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .step-desc i {
-            color: #3b82f6;
-            margin-right: 5px;
-        }
+        .info-header span { color: #60a5fa; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .info-header i { color: #60a5fa; transition: transform 0.3s; }
+        .info-body { padding: 20px 25px; display: none; border-top: 1px solid #1e3a5f; }
+        .info-body.show { display: block; }
+        .step-container { display: flex; flex-direction: column; gap: 20px; }
+        .step-item { display: flex; gap: 15px; align-items: flex-start; background: #0a1424; padding: 15px; border-radius: 20px; }
+        .step-number { background: #3b82f6; width: 32px; height: 32px; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; flex-shrink: 0; }
+        .step-content { flex: 1; }
+        .step-title { color: white; font-weight: 600; margin-bottom: 5px; }
+        .step-desc { color: #94a3b8; font-size: 13px; line-height: 1.5; }
+        .step-desc i { color: #3b82f6; margin-right: 5px; }
         .example-box {
             background: #0a1424;
             border-radius: 16px;
@@ -491,7 +488,7 @@
         @media (max-width: 700px) {
             .main-content { padding: 12px; }
             .header h1 { font-size: 22px; }
-            .btn-primary, .btn-pdf { width: 100%; justify-content: center; }
+            .btn-primary, .btn-pdf, .btn-secondary { width: 100%; justify-content: center; }
             .input-group { flex-direction: column; }
             .step-item { flex-direction: column; }
             .step-number { width: 28px; height: 28px; font-size: 12px; }
@@ -554,7 +551,7 @@
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-dumbbell"></i> Hoş geldiniz Aysun Hanım</h1>
-        <p>Spor Salonu Müşteri Takip Sistemi - Toplu Kopyala Yapıştır</p>
+        <p>Spor Salonu Müşteri Takip Sistemi - Toplu Kopyala Yapıştır veya Görsel Algılama</p>
         <div class="badge-date"><i class="far fa-calendar-alt"></i> <span id="todayDate"></span></div>
         <div style="margin-top: 15px;">
             <span id="modeBadge" class="mode-badge real-mode"><i class="fas fa-database"></i> GERÇEK MOD</span>
@@ -573,71 +570,60 @@
                 <div class="step-item">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <div class="step-title">📋 WhatsApp/Instagram'dan Listeyi Kopyala</div>
-                        <div class="step-desc">Spor salonu grubundan veya size gönderilen listedeki numaraları ve isimleri <strong>kopyalayın</strong>. Liste alt alta olmalı.</div>
+                        <div class="step-title">📸 Görsel Yükle (Ekran Görüntüsü veya Fotoğraf)</div>
+                        <div class="step-desc">WhatsApp/Instagram'daki listeyi ekran görüntüsü olarak alın ve yükleyin. <strong>Google Lens benzeri teknoloji</strong> ile otomatik okur.</div>
                         <div class="example-box">
-                            <i class="fas fa-copy"></i> Örnek kopyalanacak format:<br>
-                            5321234567 Nurten Hanım<br>
-                            5559876543 Kerem Bey<br>
-                            5331112233 Deniz<br>
-                            5445556677
+                            <i class="fas fa-image"></i> Ekran görüntüsü yükleyin, numaralar ve isimler otomatik algılanır!
                         </div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <div class="step-title">📌 Yukarıdaki Kutuya Yapıştır</div>
-                        <div class="step-desc">Kopyaladığınız listeyi <strong>"WhatsApp/Instagram'dan Listeyi Yapıştır"</strong> alanına yapıştırın.</div>
+                        <div class="step-title">📋 Veya Doğrudan Yapıştır</div>
+                        <div class="step-desc">Listeyi kopyala yapıştır yapabilirsiniz.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <div class="step-title">🚀 "Toplu Ekle" Butonuna Bas</div>
-                        <div class="step-desc">Sistem otomatik olarak her satırdaki numarayı ve ismi algılar. <strong>İsim yoksa sadece numara kaydedilir.</strong> Aynı numara tekrar eklenmez.</div>
-                        <div class="example-box">
-                            <i class="fas fa-magic"></i> İsimler otomatik düzeltilir:<br>
-                            "Nurten" → Nurten Hanım<br>
-                            "Kerem" → Kerem Bey<br>
-                            "Deniz" → Deniz Bey/Hanım (unisex)
-                        </div>
+                        <div class="step-desc">Sistem otomatik olarak her satırdaki numarayı ve ismi algılar.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-number">4</div>
                     <div class="step-content">
                         <div class="step-title">📞 Müşterilerle Görüşme</div>
-                        <div class="step-desc">Listedeki her müşteri için <strong>AÇTI / AÇMADI / HATALI</strong> butonlarını kullanın.</div>
-                        <div class="example-box">
-                            <i class="fas fa-phone-alt"></i> <strong>AÇTI</strong> → Memnuniyet butonları çıkar (MEMNUN, MEMNUN DEĞİL, DÜŞÜNÜCEK, TEKRAR ALICAK, ALMAYACAK)<br>
-                            <i class="fas fa-phone-slash"></i> <strong>AÇMADI</strong> → GERİ DÖNDÜ / GERİ DÖNMEDİ butonları çıkar<br>
-                            <i class="fas fa-exclamation-triangle"></i> <strong>HATALI</strong> → Numara hatalı veya eksik olarak işaretlenir
-                        </div>
+                        <div class="step-desc">AÇTI / AÇMADI / HATALI butonlarını kullanın.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-number">5</div>
                     <div class="step-content">
-                        <div class="step-title">🔍 Telefon ile Müşteri Ara</div>
-                        <div class="step-desc">Arama kutusuna <strong>telefonun ilk veya son hanelerini</strong> yazın. Örneğin "532" veya "4567" yazınca eşleşen müşteri "Nurten Hanım arıyor" şeklinde gösterilir.</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">6</div>
-                    <div class="step-content">
                         <div class="step-title">📄 İş Bittiğinde PDF Rapor Al</div>
-                        <div class="step-desc">Tüm görüşmeler bittiğinde <strong>"İŞ BİTTİ - PDF RAPOR"</strong> butonuna basın. Bilgisayarınıza otomatik olarak <strong>tarih ve müşteri durumlarını içeren bir PDF</strong> dosyası indirilir.</div>
-                        <div class="example-box">
-                            <i class="fas fa-file-pdf"></i> PDF içeriği örneği:<br>
-                            07/04/2026 İŞ RAPORU<br>
-                            5321234567 - Nurten Hanım ; MEMNUN<br>
-                            5559876543 - Kerem Bey ; MEMNUN DEĞİL, ŞİKAYETİ: Fiyatlar yüksek
-                        </div>
+                        <div class="step-desc">"İŞ BİTTİ - PDF RAPOR" butonuna basın.</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- GÖRSEL ALGILAMA KARTI -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-camera"></i> 📸 Görsel Algılama (Ekran Görüntüsü Yükle)</div>
+        <div id="imageUploadArea" class="image-upload-area">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Ekran görüntüsünü tıkla veya sürükle</p>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;">
+            <small style="color:#64748b;">PNG, JPG, JPEG formatları desteklenir</small>
+            <img id="imagePreview" class="image-preview" alt="Önizleme">
+            <div id="ocrProgress" class="ocr-progress">
+                <div id="ocrProgressBar" class="ocr-progress-bar"></div>
+            </div>
+            <div id="detectedText" class="detected-text"></div>
+        </div>
+        <button id="applyDetectedBtn" class="btn-secondary" style="display:none; margin-top:10px;"><i class="fas fa-check-double"></i> Algılanan Metni Kullan</button>
     </div>
 
     <div class="card">
@@ -647,7 +633,7 @@
             <button class="btn-primary" id="addBtn"><i class="fas fa-layer-group"></i> Toplu Ekle</button>
         </div>
         <div style="font-size: 12px; color: #4a5568; margin-top: 10px;">
-            💡 Her satırda: "NUMARA İSİM" veya sadece "NUMARA". İsim otomatik Hanım/Bey eklenir. Aynı numara tekrar eklenmez.
+            💡 Her satırda: "NUMARA İSİM" veya sadece "NUMARA". İsim otomatik Hanım/Bey eklenir.
         </div>
         <div id="batchResult" class="batch-result" style="display:none;"></div>
     </div>
@@ -668,7 +654,7 @@
     </div>
 
     <div class="records-area" id="recordsList">
-        <div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın</small></div>
+        <div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın veya görsel yükleyin</small></div>
     </div>
 </div>
 </div>
@@ -676,16 +662,11 @@
 <script>
     // ========== CİHAZ KİMLİĞİ OLUŞTUR ==========
     function getDeviceId() {
-        // Tarayıcı ve cihaz bilgilerini al
         const screenRes = `${screen.width}x${screen.height}`;
         const userAgent = navigator.userAgent;
         const language = navigator.language;
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        
-        // Basit bir cihaz parmak izi oluştur
         let deviceFingerprint = `${screenRes}|${language}|${timezone}|${userAgent.substring(0, 100)}`;
-        
-        // Basit hash (cihaz kimliği)
         let hash = 0;
         for (let i = 0; i < deviceFingerprint.length; i++) {
             hash = ((hash << 5) - hash) + deviceFingerprint.charCodeAt(i);
@@ -701,28 +682,11 @@
     
     // DOĞRULAMA SORULARI
     const QUESTIONS = [
-        {
-            text: "Kaan'ın burcu nedir?",
-            hint: "İpucu: Poyraz ile aynı",
-            answers: ["aslan", "aslan burcu", "aslan burcudur"]
-        },
-        {
-            text: "Elisa ne zaman doğmuştur?",
-            answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"]
-        },
-        {
-            text: "Poyraz ne zaman doğmuştur?",
-            answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"]
-        },
-        {
-            text: "Ali ne zaman doğmuştur?",
-            answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"]
-        },
-        {
-            text: "Bu siteyi kim yapmıştır?",
-            hint: "İpucu: En sevdiğin yeğenin.",
-            answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"]
-        }
+        { text: "Kaan'ın burcu nedir?", hint: "İpucu: Aslanların kralı, Poyraz ile aynı", answers: ["aslan", "aslan burcu", "aslan burcudur"] },
+        { text: "Elisa ne zaman doğmuştur?", hint: "İpucu: 24 Haziran / 2017", answers: ["24 haziran", "24 haziran 2017", "haziran", "2017", "24.06.2017", "24/06/2017"] },
+        { text: "Poyraz ne zaman doğmuştur?", hint: "İpucu: 3 Ağustos / 2009 veya 2010", answers: ["3 ağustos", "ağustos", "3 ağustos 2009", "2009", "3 ağustos 2010", "2010", "03.08.2009", "03/08/2009"] },
+        { text: "Ali ne zaman doğmuştur?", hint: "İpucu: 18 Aralık 2006", answers: ["18 aralık", "aralık", "18 aralık 2006", "2006", "18.12.2006", "18/12/2006"] },
+        { text: "Bu siteyi kim yapmıştır?", hint: "İpucu: En sevdiğin yeğenin, ismi K ile başlıyor", answers: ["kaan", "kaan emre", "kaanemre", "kaandemir", "kaan demir", "en sevdiğim yiğenim"] }
     ];
 
     let currentQuestionIndex = 0;
@@ -732,15 +696,77 @@
     let questionChangeLeft = 5;
     let timerInterval = null;
     
-    // Admin Test Mod Değişkenleri
     let isTestMode = false;
     let testCustomers = [];
+    let detectedRawText = "";
 
-    // Cihaz bilgisini göster
+    // Görsel Algılama
+    const imageInput = document.getElementById("imageInput");
+    const imageUploadArea = document.getElementById("imageUploadArea");
+    const imagePreview = document.getElementById("imagePreview");
+    const ocrProgress = document.getElementById("ocrProgress");
+    const ocrProgressBar = document.getElementById("ocrProgressBar");
+    const detectedTextDiv = document.getElementById("detectedText");
+    const applyDetectedBtn = document.getElementById("applyDetectedBtn");
+
+    imageUploadArea.addEventListener("click", () => imageInput.click());
+    imageUploadArea.addEventListener("dragover", (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "#60a5fa"; });
+    imageUploadArea.addEventListener("dragleave", () => imageUploadArea.style.borderColor = "#3b82f6");
+    imageUploadArea.addEventListener("drop", (e) => { e.preventDefault(); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith("image/")) processImage(file); });
+
+    imageInput.addEventListener("change", (e) => { if (e.target.files[0]) processImage(e.target.files[0]); });
+
+    async function processImage(file) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";
+            ocrProgress.style.display = "block";
+            ocrProgressBar.style.width = "0%";
+            detectedTextDiv.style.display = "none";
+            applyDetectedBtn.style.display = "none";
+            
+            // Tesseract ile OCR işlemi
+            const worker = await Tesseract.createWorker('tur');
+            await worker.loadLanguage('tur+eng');
+            await worker.initialize('tur+eng');
+            
+            let progress = 0;
+            worker.setProgress((p) => {
+                progress = p.progress * 100;
+                ocrProgressBar.style.width = `${progress}%`;
+            });
+            
+            const { data: { text } } = await worker.recognize(e.target.result);
+            await worker.terminate();
+            
+            ocrProgressBar.style.width = "100%";
+            setTimeout(() => { ocrProgress.style.display = "none"; }, 1000);
+            
+            detectedRawText = text;
+            detectedTextDiv.innerHTML = `<i class="fas fa-font"></i> Algılanan Metin:<br><pre style="font-family:monospace; font-size:11px; margin-top:8px;">${escapeHtml(text.substring(0, 1000))}</pre>`;
+            detectedTextDiv.style.display = "block";
+            applyDetectedBtn.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    applyDetectedBtn.addEventListener("click", () => {
+        if (detectedRawText) {
+            document.getElementById("rawInput").value = detectedRawText;
+            alert("✅ Algılanan metin yapıştırma alanına aktarıldı! Şimdi 'Toplu Ekle' butonuna basabilirsiniz.");
+        }
+    });
+
     function showDeviceInfo() {
         const deviceSpan = document.getElementById("deviceIdText");
         if (deviceSpan) {
-            // Kısa bir cihaz adı göster
             const deviceShort = deviceId.substring(0, 8);
             deviceSpan.innerHTML = `<i class="fas fa-fingerprint"></i> Bu cihaz ID: ${deviceShort}... (Her cihaz ayrı doğrulama ister)`;
         }
@@ -776,13 +802,11 @@
         const isCorrect = currentQ.answers.some(a => answer === a.toLowerCase());
         
         if (isCorrect) {
-            // Cihaza özel doğrulama başarılı
             localStorage.setItem(STORAGE_VERIFY_KEY, "true");
             showLoadingAndEnter();
         } else {
             wrongAttempts++;
             updateAttemptsDisplay();
-            // Cihaza özel hata sayacını kaydet
             localStorage.setItem(STORAGE_ATTEMPTS_KEY, wrongAttempts);
             
             if (wrongAttempts >= 5) {
@@ -848,7 +872,6 @@
         if (isLocked) { alert("Kilitli durumdayken soru değiştiremezsiniz!"); return; }
         if (questionChangeLeft <= 0) { alert("Soru değiştirme hakkınız kalmadı!"); return; }
         questionChangeLeft--;
-        // Cihaza özel soru değiştirme hakkını kaydet
         localStorage.setItem(STORAGE_CHANGE_KEY, questionChangeLeft);
         let newIndex = Math.floor(Math.random() * QUESTIONS.length);
         while (newIndex === currentQuestionIndex && QUESTIONS.length > 1) { newIndex = Math.floor(Math.random() * QUESTIONS.length); }
@@ -857,7 +880,6 @@
         document.getElementById("answerInput").value = "";
     });
     
-    // ADMIN TEST MOD ŞİFRE
     document.getElementById("adminTestBtn").addEventListener("click", () => {
         document.getElementById("passwordModal").style.display = "flex";
     });
@@ -868,9 +890,7 @@
             document.getElementById("passwordModal").style.display = "none";
             document.getElementById("adminPassword").value = "";
             document.getElementById("passwordError").innerHTML = "";
-            // Admin test moduna geç
             isTestMode = true;
-            // Admin için ayrı doğrulama geçişi
             localStorage.setItem(STORAGE_VERIFY_KEY, "true");
             showLoadingAndEnter();
         } else {
@@ -911,9 +931,7 @@
     
     function checkVerification() {
         showDeviceInfo();
-        // Cihaza özel doğrulama kontrolü
         const verified = localStorage.getItem(STORAGE_VERIFY_KEY);
-        // Cihaza özel hata ve soru değiştirme verilerini yükle
         const savedAttempts = localStorage.getItem(STORAGE_ATTEMPTS_KEY);
         if (savedAttempts !== null) wrongAttempts = parseInt(savedAttempts);
         const savedChanges = localStorage.getItem(STORAGE_CHANGE_KEY);
@@ -933,7 +951,6 @@
     const STORAGE_KEY = "teyze_full_crm";
     let customers = [];
 
-    // Mod değiştirme
     function updateModeUI() {
         const modeBadge = document.getElementById("modeBadge");
         const switchBtn = document.getElementById("switchModeBtn");
@@ -968,7 +985,6 @@
         }
     });
 
-    // Bilgi kutusu aç/kapa
     document.getElementById("infoHeader").addEventListener("click", () => {
         const body = document.getElementById("infoBody");
         const icon = document.getElementById("infoIcon");
@@ -1075,7 +1091,7 @@
     function attachMainEvents() {
         document.getElementById("addBtn").onclick = () => {
             const raw = document.getElementById("rawInput").value.trim();
-            if (!raw) return alert("Lütfen listeyi yapıştırın!");
+            if (!raw) return alert("Lütfen listeyi yapıştırın veya görsel yükleyin!");
             addBatchCustomers(raw);
             document.getElementById("rawInput").value = "";
         };
@@ -1155,7 +1171,7 @@
         const targetList = isTestMode ? testCustomers : customers;
         countSpan.innerText = targetList.length;
         if (!targetList.length) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın</small></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Henüz müşteri eklenmemiş</p><small>Yukarıya listeyi yapıştırın veya görsel yükleyin</small></div>`;
             return;
         }
         container.innerHTML = targetList.map(c => {
